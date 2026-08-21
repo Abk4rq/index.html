@@ -13,7 +13,6 @@
     <style>
         * { box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
         
-        /* تأثير النجوم والأقمار الصناعية المتحركة في الخلفية */
         @keyframes moveStars {
             from { background-position: 0 0; }
             to { background-position: -10000px 5000px; }
@@ -24,8 +23,7 @@
             background-image: 
                 radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
                 radial-gradient(2px 2px at 40px 70px, #38bdf8, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 90px 40px, #a855f7, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0));
+                radial-gradient(1px 1px at 90px 40px, #a855f7, rgba(0,0,0,0));
             background-repeat: repeat;
             background-size: 200px 200px;
             animation: moveStars 60s linear infinite;
@@ -62,65 +60,75 @@
         .container { 
             max-width: 680px; margin: 0 auto; 
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            padding: 35px; border-radius: 28px; 
+            padding: 35px; border-radius: 28px; position: relative;
         }
         
+        /* زر التحكم السري الصغير في أعلى اليمين */
+        .secret-admin-btn {
+            position: absolute; top: 15px; right: 20px;
+            width: 12px; height: 12px; background: rgba(56, 189, 248, 0.4);
+            border-radius: 50%; cursor: pointer; border: none; outline: none;
+            transition: 0.3s;
+        }
+        .secret-admin-btn:hover { background: #38bdf8; transform: scale(1.3); }
+
         .top-bar {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
         }
         .live-clock {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 12px; font-weight: bold;
+            font-size: 11px; font-weight: bold;
             background: linear-gradient(90deg, #38bdf8, #a855f7, #ec4899);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: 1px; text-transform: uppercase;
+            letter-spacing: 0.5px; text-transform: uppercase;
         }
         .theme-toggle-btn {
             background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8; padding: 6px 12px; border-radius: 10px; cursor: pointer;
-            font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 6px;
+            color: #38bdf8; padding: 5px 10px; border-radius: 8px; cursor: pointer;
+            font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 5px;
         }
         .theme-toggle-btn:hover { background: #38bdf8; color: #fff; }
 
         .header-logo { 
             text-align: center; border-bottom: 1px solid rgba(100, 116, 139, 0.2); 
-            padding-bottom: 25px; margin-bottom: 20px; cursor: pointer;
+            padding-bottom: 20px; margin-bottom: 15px; cursor: pointer;
         }
-        .header-logo:hover { transform: scale(1.01); }
         .header-logo h1 { 
-            font-size: 42px; font-weight: 900; margin: 0; 
+            font-size: 38px; font-weight: 900; margin: 0; 
             background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #b19fff 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: 3px; text-shadow: 0 10px 30px rgba(0, 242, 254, 0.2);
+            letter-spacing: 2px;
         }
         .header-logo p { 
-            margin: 8px 0 0 0; color: #94a3b8; font-size: 13px; font-weight: 700; 
+            margin: 5px 0 0 0; color: #94a3b8; font-size: 12px; font-weight: 700; 
             letter-spacing: 2px; text-transform: uppercase;
         }
 
+        /* صندوق الطقس مصغر وغير مزعج */
         .weather-box {
-            border-radius: 16px; padding: 14px 20px; margin-bottom: 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            font-size: 13px; font-weight: 600; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-radius: 12px; padding: 8px 15px; margin-bottom: 15px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-size: 12px; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             border: 1px solid rgba(56, 189, 248, 0.2);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .weather-box span { color: #38bdf8; }
 
         .stats-counter {
-            text-align: center; font-size: 13px; font-weight: 600; color: #38bdf8; margin-bottom: 20px;
+            text-align: center; font-size: 12px; font-weight: 600; color: #38bdf8; margin-bottom: 15px;
         }
 
         .contact-box {
-            border-radius: 20px; padding: 20px;
-            margin-bottom: 25px; text-align: center;
+            border-radius: 16px; padding: 15px;
+            margin-bottom: 20px; text-align: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        .contact-box h3 { font-size: 15px; color: #38bdf8; margin: 0 0 15px 0; font-weight: 700; }
-        .contact-buttons { display: flex; gap: 12px; justify-content: center; }
+        .contact-box h3 { font-size: 14px; color: #38bdf8; margin: 0 0 10px 0; font-weight: 700; }
+        .contact-buttons { display: flex; gap: 10px; justify-content: center; }
         .contact-btn {
-            flex: 1; padding: 12px 18px; border-radius: 14px;
-            font-weight: bold; font-size: 14px; text-decoration: none;
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            flex: 1; padding: 10px 14px; border-radius: 12px;
+            font-weight: bold; font-size: 13px; text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             transition: 0.3s;
         }
         .whatsapp-btn {
@@ -136,129 +144,133 @@
 
         .search-box { margin-bottom: 15px; }
         .search-input {
-            width: 100%; padding: 14px 18px;
-            border-radius: 16px; font-family: 'Poppins', sans-serif; font-size: 15px;
+            width: 100%; padding: 12px 16px;
+            border-radius: 14px; font-family: 'Poppins', sans-serif; font-size: 14px;
             outline: none; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
-        .search-input:focus { border-color: #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+        .search-input:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
 
         .filter-buttons {
-            display: flex; gap: 8px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 5px;
+            display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;
         }
         .filter-btn {
             background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8; padding: 6px 14px; border-radius: 10px; cursor: pointer;
-            font-size: 12px; font-weight: 600; white-space: nowrap;
+            color: #38bdf8; padding: 5px 12px; border-radius: 8px; cursor: pointer;
+            font-size: 11px; font-weight: 600; white-space: nowrap;
         }
         .filter-btn.active, .filter-btn:hover { background: #38bdf8; color: #fff; }
 
         #adminPanel { 
-            display: none; padding: 25px; border-radius: 20px; margin-bottom: 30px; 
+            display: none; padding: 20px; border-radius: 16px; margin-bottom: 25px; 
             border: 1px solid rgba(56, 189, 248, 0.4); 
             box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
         }
         
-        .form-title { color: #38bdf8; font-weight: bold; margin-top: 0; margin-bottom: 15px; font-size: 17px; }
+        .form-title { color: #38bdf8; font-weight: bold; margin-top: 0; margin-bottom: 12px; font-size: 16px; }
         
         input[type="text"], input[type="file"], select, textarea { 
-            width: 100%; padding: 14px; margin-bottom: 15px; 
-            border-radius: 14px; font-family: 'Poppins', sans-serif; font-size: 14px;
+            width: 100%; padding: 12px; margin-bottom: 12px; 
+            border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 13px;
             outline: none; transition: 0.3s;
         }
         input[type="file"]::file-selector-button {
             background: linear-gradient(135deg, #0284c7, #0369a1);
-            color: white; border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: bold;
+            color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold;
         }
-        textarea { resize: vertical; height: 90px; }
+        textarea { resize: vertical; height: 80px; }
         
         .add-btn { 
-            width: 100%; padding: 14px; 
+            width: 100%; padding: 12px; 
             background: linear-gradient(135deg, #10b981, #059669); 
-            color: white; border: none; border-radius: 14px; 
-            font-weight: bold; font-size: 16px; cursor: pointer; 
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+            color: white; border: none; border-radius: 12px; 
+            font-weight: bold; font-size: 15px; cursor: pointer; 
+            box-shadow: 0 8px 15px rgba(16, 185, 129, 0.2);
             transition: 0.3s; 
         }
         .add-btn:hover { opacity: 0.95; transform: translateY(-2px); }
 
         .image-card { 
-            padding: 20px; margin-top: 25px; border-radius: 22px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            padding: 18px; margin-top: 20px; border-radius: 20px; 
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1); 
             border: 1px solid rgba(100, 116, 139, 0.2);
         }
         
         .card-header-info {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
         }
         .room-badge {
             background: linear-gradient(135deg, #38bdf8, #2563eb);
-            color: white; padding: 6px 14px; border-radius: 10px;
-            font-weight: 700; font-size: 14px; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+            color: white; padding: 5px 12px; border-radius: 8px;
+            font-weight: 700; font-size: 13px; box-shadow: 0 3px 10px rgba(56, 189, 248, 0.3);
         }
         .status-badge {
-            padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold;
+            padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold;
         }
         .status-completed { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
         .status-progress { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
 
         .image-card img { 
-            width: 100%; max-height: 450px; object-fit: contain; 
-            border-radius: 16px; display: block; margin-bottom: 15px; 
-            background: #020617; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 100%; max-height: 400px; object-fit: contain; 
+            border-radius: 14px; display: block; margin-bottom: 12px; 
+            background: #020617; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         .image-card p { 
-            font-size: 16px; margin: 12px 0; line-height: 1.7; font-weight: 600; word-break: break-word;
+            font-size: 15px; margin: 10px 0; line-height: 1.6; font-weight: 600; word-break: break-word;
         }
         .date-tag { 
-            font-size: 12px; display: block; margin-bottom: 15px; 
+            font-size: 11px; display: block; margin-bottom: 12px; 
             font-family: 'Courier New', Courier, monospace;
         }
         
-        .card-actions { display: flex; gap: 10px; }
+        .card-actions { display: flex; gap: 8px; }
         .card-actions button { 
-            flex: 1; padding: 10px; border: none; border-radius: 10px; 
-            font-weight: bold; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.3s; 
+            flex: 1; padding: 9px; border: none; border-radius: 10px; 
+            font-weight: bold; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.3s; font-size: 12px;
         }
         .share-btn { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
         .share-btn:hover { background: #38bdf8; color: #fff; }
         .like-btn { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
         .like-btn:hover { background: #e11d48; color: #fff; }
         
-        .admin-controls { display: flex; gap: 10px; margin-top: 10px; }
+        .admin-controls { display: flex; gap: 8px; margin-top: 10px; }
         .edit-btn { background: rgba(217, 119, 6, 0.2); color: #fbbf24; border: 1px solid rgba(217, 119, 6, 0.4); }
         .edit-btn:hover { background: #d97706; color: white; }
         .del-btn { background: rgba(220, 38, 38, 0.2); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.4); }
         .del-btn:hover { background: #dc2626; color: white; }
 
         .footer { 
-            text-align: center; margin-top: 30px; padding-top: 20px; 
+            text-align: center; margin-top: 25px; padding-top: 15px; 
             border-top: 1px solid rgba(100, 116, 139, 0.2); 
         }
-        .footer-text { font-size: 11px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
-        .creation-date { font-size: 12px; margin-bottom: 12px; font-family: 'Courier New', Courier, monospace; }
+        .footer-text { font-size: 10px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 2px; }
+        .creation-date { font-size: 11px; margin-bottom: 10px; font-family: 'Courier New', Courier, monospace; }
         .dev-name {
-            font-size: 20px; font-weight: 900;
+            font-size: 18px; font-weight: 900;
             background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: 1.5px; display: inline-block;
+            letter-spacing: 1px; display: inline-block;
         }
     </style>
 </head>
 <body class="dark">
 
 <div class="container">
+    <!-- زر سري صغير جداً في أقصى الزاوية اليمنى العليا (3 ضغطات لفتح لوحة التحكم) -->
+    <button class="secret-admin-btn" onclick="secretAdminLogin()" title="Admin"></button>
+
     <div class="top-bar">
         <div class="live-clock" id="liveClock">Loading...</div>
         <button class="theme-toggle-btn" onclick="toggleTheme()">☀️ / 🌙 Theme</button>
     </div>
 
-    <div class="header-logo" ondblclick="loginAdmin()" title="Developer Area">
+    <div class="header-logo" ondblclick="loginAdmin()">
         <h1>TV SERVICE</h1>
         <p>OFFICIAL MEDIA GALLERY</p>
     </div>
 
+    <!-- صندوق الطقس المصغر والمرتب -->
     <div class="weather-box" id="weatherBox">
-        📍 <span>Basrah</span>: <span id="weatherText">Checking signal & weather...</span> 📡
+        📍 <span>Basrah</span>: <span id="weatherText">Stable Signal 🟢</span>
     </div>
 
     <div class="stats-counter" id="statsCounter">📊 Total Works: Loading...</div>
@@ -267,7 +279,7 @@
         <h3>Contact & Maintenance Services</h3>
         <div class="contact-buttons">
             <a href="https://wa.me/9647818025533" target="_blank" class="contact-btn whatsapp-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448c-.352-.19-.71-.383-1.077-.577l-5.318 1.391zm22.585-20.354c-2.422-2.423-5.642-3.757-9.066-3.758-7.054 0-12.793 5.739-12.795 12.796-.001 2.253.589 4.453 1.708 6.388l-1.808 6.602 6.772-1.776c1.854 1.011 3.968 1.545 6.126 1.546 7.054 0 12.793-5.739 12.795-12.796.002-3.424-1.332-6.645-3.754-9.068zm-9.066 19.349c-1.815 0-3.593-.488-5.145-1.411l-.369-.221-3.83 1.004 1.023-3.733-.24-.381c-1.013-1.611-1.548-3.488-1.547-5.405.002-5.626 4.581-10.205 10.209-10.205 2.727.001 5.288 1.063 7.218 2.993 1.93 1.93 2.991 4.492 2.99 7.219-.002 5.626-4.582 10.205-10.209 10.205zm5.597-7.593c-.305-.153-1.805-.891-2.085-.994-.28-.103-.483-.153-.686.153-.203.305-.788.994-.966 1.198-.178.204-.356.229-.661.076-.305-.153-1.285-.473-2.449-1.512-.905-.806-1.517-1.802-1.696-2.107-.178-.305-.019-.47.133-.623.137-.137.305-.356.458-.534.153-.178.203-.305.305-.51.102-.204.051-.382-.025-.534-.076-.153-.686-1.652-.94-2.261-.248-.598-.501-.517-.686-.527l-.585-.01c-.203 0-.533.076-.813.382-.28.305-1.068 1.044-1.068 2.547 0 1.503 1.095 2.952 1.248 3.156.153.203 2.155 3.291 5.226 4.613.73.315 1.299.503 1.742.645.733.234 1.4.201 1.928.122.591-.088 1.805-.738 2.061-1.451.255-.713.255-1.323.179-1.451-.076-.128-.28-.204-.585-.357z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448c-.352-.19-.71-.383-1.077-.577l-5.318 1.391zm22.585-20.354c-2.422-2.423-5.642-3.757-9.066-3.758-7.054 0-12.793 5.739-12.795 12.796-.001 2.253.589 4.453 1.708 6.388l-1.808 6.602 6.772-1.776c1.854 1.011 3.968 1.545 6.126 1.546 7.054 0 12.793-5.739 12.795-12.796.002-3.424-1.332-6.645-3.754-9.068zm-9.066 19.349c-1.815 0-3.593-.488-5.145-1.411l-.369-.221-3.83 1.004 1.023-3.733-.24-.381c-1.013-1.611-1.548-3.488-1.547-5.405.002-5.626 4.581-10.205 10.209-10.205 2.727.001 5.288 1.063 7.218 2.993 1.93 1.93 2.991 4.492 2.99 7.219-.002 5.626-4.582 10.205-10.209 10.205zm5.597-7.593c-.305-.153-1.805-.891-2.085-.994-.28-.103-.483-.153-.686.153-.203.305-.788.994-.966 1.198-.178.204-.356.229-.661.076-.305-.153-1.285-.473-2.449-1.512-.905-.806-1.517-1.802-1.696-2.107-.178-.305-.019-.47.133-.623.137-.137.305-.356.458-.534.153-.178.203-.305.305-.51.102-.204.051-.382-.025-.534-.076-.153-.686-1.652-.94-2.261-.248-.598-.501-.517-.686-.527l-.585-.01c-.203 0-.533.076-.813.382-.28.305-1.068 1.044-1.068 2.547 0 1.503 1.095 2.952 1.248 3.156.153.203 2.155 3.291 5.226 4.613.73.315 1.299.503 1.742.645.733.234 1.4.201 1.928.122.591-.088 1.805-.738 2.061-1.451.255-.713.255-1.323.179-1.451-.076-.128-.28-.204-.585-.357z"/></svg>
                 WhatsApp
             </a>
             <a href="tel:+9647818025533" class="contact-btn call-btn">
@@ -323,15 +335,26 @@
     let isAdmin = false;
     let allItems = [];
     let currentCategory = 'All';
+    let secretClicks = 0;
+
+    // عداد ضغطات الزر السري (3 ضغطات)
+    function secretAdminLogin() {
+        secretClicks++;
+        if (secretClicks >= 3) {
+            secretClicks = 0;
+            loginAdmin();
+        }
+        setTimeout(() => { secretClicks = 0; }, 1500);
+    }
 
     async function fetchWeather() {
         try {
             let res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=30.5081&current_weather=true');
             let data = await res.json();
             let temp = data.current_weather.temperature;
-            document.getElementById('weatherText').innerText = `${temp}°C | Excellent Satellite Signal 🟢`;
+            document.getElementById('weatherText').innerText = `${temp}°C | Signal 🟢`;
         } catch (e) {
-            document.getElementById('weatherText').innerText = `Clear Sky | Stable Signal 🟢`;
+            document.getElementById('weatherText').innerText = `Stable Signal 🟢`;
         }
     }
     fetchWeather();
@@ -359,7 +382,7 @@
     function loginAdmin() {
         if (!isAdmin) {
             let password = prompt("Enter Admin Password:");
-            if (password && password.trim() === "Abdullah2001") {
+            if (password && password.trim() === "1234") {
                 isAdmin = true;
                 document.getElementById('adminPanel').style.display = 'block';
                 renderGallery(allItems);
