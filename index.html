@@ -6,6 +6,11 @@
     <title>TV SERVICE - Official Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
+    <!-- مكتبات Firebase السحابية -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    
     <style>
         * { box-sizing: border-box; }
         body { 
@@ -226,7 +231,7 @@
         <p class="form-title">لوحة تحكم المطور ⚙️</p>
         <input type="file" id="imgInput" accept="image/*">
         <textarea id="descInput" placeholder="اكتب وصف الصورة هنا..."></textarea>
-        <button class="add-btn" onclick="saveData()">نشر الصورة الآن للجميع</button>
+        <button class="add-btn" onclick="saveData()">نشر الصورة للجميع</button>
     </div>
 
     <div id="gallery"></div>
@@ -251,6 +256,20 @@
 </div>
 
 <script>
+    // ضع القيم التي نسختها من شاشة فايربيس هنا تماماً:
+    const firebaseConfig = {
+        apiKey: "AIzaSyB...",
+        authDomain: "tvservice-d3b56.firebaseapp.com",
+        projectId: "tvservice-d3b56",
+        storageBucket: "tvservice-d3b56.appspot.com",
+        messagingSenderId: "155014444459",
+        appId: "1:155014444459:web:2ab8793055fba5a7c90eee"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
     let isAdmin = false;
 
     function updateClock() {
@@ -272,8 +291,8 @@
             if (password && password.trim() === "1234") {
                 isAdmin = true;
                 document.getElementById('adminPanel').style.display = 'block';
-                renderGallery();
-                alert("أهلاً بك يا عبد الله، تم تفعيل صلاحيات التعديل والحذف.");
+                loadGallery();
+                alert("أهلاً بك يا عبد الله، تم تفعيل لوحة التحكم السحابية.");
             } else {
                 alert("كلمة المرور غير صحيحة!");
             }
@@ -290,105 +309,93 @@
         }
 
         const file = fileInput.files[0];
-        const formData = new FormData();
-        formData.append("image", file);
+        const storageRef = storage.ref('images/' + Date.now() + '_' + file.name);
+        
+        alert("جاري رفع الصورة للسحابة لكي يراها الجميع...");
 
-        alert("جاري رفع الصورة إلى السحابة للجميع، يرجى الانتظار قليلاً...");
-
-        // استخدام خدمة رفع سحابية مجانية ومباشرة
-        fetch("https://api.imgbb.com/1/upload?key=6d207e02193a894aa96b54d6faee718b", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                const imageUrl = result.data.url;
+        storageRef.put(file).then(function(snapshot) {
+            snapshot.ref.getDownloadURL().then(function(downloadURL) {
                 const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
                 const date = new Date().toLocaleDateString('en-US', options);
 
-                const newItem = {
-                    id: Date.now(),
-                    img: imageUrl,
+                db.collection("tvgallery").add({
+                    img: downloadURL,
                     desc: descInput.value || "",
-                    date: date
-                };
-
-                let data = JSON.parse(localStorage.getItem('tvServiceGalleryV5') || '[]');
-                data.unshift(newItem); 
-                localStorage.setItem('tvServiceGalleryV5', JSON.stringify(data));
-
-                fileInput.value = '';
-                descInput.value = '';
-
-                renderGallery();
-                alert("تم نشر الصورة بنجاح وستظهر لكل الزبائن فوراً!");
-            } else {
-                alert("حدث خطأ أثناء رفع الصورة، حاول مرة أخرى.");
-            }
-        })
-        .catch(error => {
-            alert("فشل الاتصال بالخادم: " + error);
+                    date: date,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                .then(function() {
+                    fileInput.value = '';
+                    descInput.value = '';
+                    alert("تم نشر الصورة بنجاح وستظهر لكل الزبائن فوراً!");
+                    loadGallery();
+                })
+                .catch(function(error) {
+                    alert("خطأ في حفظ البيانات: " + error.message);
+                });
+            });
+        }).catch(function(error) {
+            alert("خطأ في رفع الصورة: " + error.message);
         });
     }
 
-    function renderGallery() {
+    function loadGallery() {
         const gallery = document.getElementById('gallery');
-        gallery.innerHTML = '';
         
-        let data = JSON.parse(localStorage.getItem('tvServiceGalleryV5') || '[]');
-
-        if (data.length === 0) {
-            gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 30px; font-size:14px;">No images uploaded yet.</p>';
-            return;
-        }
-
-        data.forEach(item => {
-            let adminButtons = '';
-            if (isAdmin) {
-                adminButtons = `
-                    <div class="admin-controls">
-                        <button class="edit-btn" onclick="editItem(${item.id})">تعديل الوصف</button>
-                        <button class="del-btn" onclick="deleteItem(${item.id})">حذف الصورة</button>
-                    </div>
-                `;
+        db.collection("tvgallery").orderBy("createdAt", "desc").onSnapshot(function(querySnapshot) {
+            gallery.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 30px; font-size:14px;">No images uploaded yet.</p>';
+                return;
             }
 
-            gallery.innerHTML += `
-                <div class="image-card" id="card-${item.id}">
-                    <img src="${item.img}" alt="Gallery Image">
-                    <p id="desc-${item.id}">${item.desc}</p>
-                    <span class="date-tag">${item.date}</span>
-                    ${adminButtons}
-                </div>
-            `;
+            querySnapshot.forEach(function(doc) {
+                const item = doc.data();
+                const docId = doc.id;
+
+                let adminButtons = '';
+                if (isAdmin) {
+                    adminButtons = `
+                        <div class="admin-controls">
+                            <button class="edit-btn" onclick="editItem('${docId}', '${item.desc}')">تعديل</button>
+                            <button class="del-btn" onclick="deleteItem('${docId}')">حذف</button>
+                        </div>
+                    `;
+                }
+
+                gallery.innerHTML += `
+                    <div class="image-card" id="card-${docId}">
+                        <img src="${item.img}" alt="Gallery Image">
+                        <p>${item.desc}</p>
+                        <span class="date-tag">${item.date}</span>
+                        ${adminButtons}
+                    </div>
+                `;
+            });
         });
     }
 
     function deleteItem(id) {
-        if (confirm("هل أنت متأكد من حذف هذه الصورة نهائياً؟")) {
-            let data = JSON.parse(localStorage.getItem('tvServiceGalleryV5') || '[]');
-            data = data.filter(item => item.id !== id);
-            localStorage.setItem('tvServiceGalleryV5', JSON.stringify(data));
-            renderGallery();
+        if (confirm("هل أنت متأكد من حذف هذه الصورة نهائياً للجميع؟")) {
+            db.collection("tvgallery").doc(id).delete().then(function() {
+                alert("تم الحذف بنجاح!");
+            });
         }
     }
 
-    function editItem(id) {
-        let data = JSON.parse(localStorage.getItem('tvServiceGalleryV5') || '[]');
-        const currentItem = data.find(i => i.id === id);
-        
-        if (currentItem) {
-            const newDesc = prompt("أدخل الوصف الجديد:", currentItem.desc);
-            if (newDesc !== null) {
-                currentItem.desc = newDesc;
-                localStorage.setItem('tvServiceGalleryV5', JSON.stringify(data));
-                renderGallery();
-            }
+    function editItem(id, currentDesc) {
+        const newDesc = prompt("تعديل الوصف:", currentDesc);
+        if (newDesc !== null) {
+            db.collection("tvgallery").doc(id).update({
+                desc: newDesc
+            }).then(function() {
+                alert("تم التعديل بنجاح!");
+            });
         }
     }
 
-    renderGallery();
+    loadGallery();
 </script>
 
 </body>
