@@ -122,6 +122,8 @@
             font-weight: bold; font-family: 'Poppins', sans-serif; cursor: pointer; 
             transition: 0.3s; 
         }
+        .edit-btn { background: rgba(217, 119, 6, 0.2); color: #fbbf24; border: 1px solid rgba(217, 119, 6, 0.4); }
+        .edit-btn:hover { background: #d97706; color: white; }
         .del-btn { background: rgba(220, 38, 38, 0.2); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.4); }
         .del-btn:hover { background: #dc2626; color: white; }
 
@@ -249,7 +251,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // رفع سريع جداً بدون ضغط أو انتظار
     function saveData() {
         const fileInput = document.getElementById('imgInput');
         const descInput = document.getElementById('descInput');
@@ -274,7 +275,7 @@
             .then(() => {
                 fileInput.value = '';
                 descInput.value = '';
-                alert("Image published successfully and visible to all users instantly!");
+                alert("Image published successfully!");
             })
             .catch(error => {
                 alert("Error publishing: " + error.message);
@@ -299,7 +300,8 @@
 
                 let adminControls = isAdmin ? `
                     <div class="admin-controls">
-                        <button class="del-btn" onclick="deleteItem('${docId}')">Delete Permanently</button>
+                        <button class="edit-btn" onclick="editItem('${docId}', '${encodeURIComponent(item.desc || '')}')">Edit Description</button>
+                        <button class="del-btn" onclick="deleteItem('${docId}')">Delete</button>
                     </div>
                 ` : '';
 
@@ -313,6 +315,20 @@
                 `;
             });
         });
+    }
+
+    function editItem(docId, currentDesc) {
+        let decodedDesc = decodeURIComponent(currentDesc);
+        let newDesc = prompt("Edit image description:", decodedDesc);
+        if (newDesc !== null) {
+            db.collection("tvgallery").doc(docId).update({
+                desc: newDesc
+            }).then(() => {
+                alert("Description updated successfully!");
+            }).catch(error => {
+                alert("Error updating: " + error.message);
+            });
+        }
     }
 
     function deleteItem(docId) {
