@@ -32,7 +32,7 @@
         body.dark .container { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); }
         body.dark .search-input, body.dark input[type="text"], body.dark input[type="file"], body.dark select, body.dark textarea { background: rgba(30, 41, 59, 0.6); color: #fff; border-color: rgba(255, 255, 255, 0.12); }
         body.dark .image-card { background: rgba(30, 41, 59, 0.5); border-color: rgba(255, 255, 255, 0.08); }
-        body.dark .contact-box, body.dark .weather-box { background: rgba(30, 41, 59, 0.6); border-color: rgba(255, 255, 255, 0.08); }
+        body.dark .weather-box { background: rgba(30, 41, 59, 0.6); border-color: rgba(255, 255, 255, 0.08); }
         body.dark #adminPanel { background: rgba(30, 41, 59, 0.95); border-color: rgba(56, 189, 248, 0.4); }
 
         body.light { 
@@ -46,7 +46,7 @@
         body.light .container { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
         body.light .search-input, body.light input[type="text"], body.light input[type="file"], body.light select, body.light textarea { background: #f8fafc; color: #0f172a; border-color: rgba(0, 0, 0, 0.15); }
         body.light .image-card { background: #ffffff; border-color: rgba(0, 0, 0, 0.08); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        body.light .contact-box, body.light .weather-box { background: #ffffff; border-color: rgba(0, 0, 0, 0.08); }
+        body.light .weather-box { background: #ffffff; border-color: rgba(0, 0, 0, 0.08); }
         body.light #adminPanel { background: #f8fafc; border-color: rgba(56, 189, 248, 0.4); }
         body.light .header-logo p, body.light .footer-text, body.light .date-tag { color: #64748b; }
 
@@ -71,6 +71,26 @@
             transition: 0.3s; z-index: 10;
         }
         .secret-admin-btn:hover { background: #38bdf8; transform: scale(1.3); }
+
+        /* الأزرار الثابتة العائمة (الواتساب على اليسار والكول على اليمين) */
+        .floating-btn {
+            position: fixed; bottom: 20px; z-index: 999;
+            padding: 10px 16px; border-radius: 50px;
+            font-weight: bold; font-size: 13px; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px); transition: 0.3s;
+        }
+        .floating-whatsapp {
+            left: 20px; background: rgba(16, 185, 129, 0.85); color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .floating-whatsapp:hover { background: #10b981; transform: scale(1.05); }
+        .floating-call {
+            right: 20px; background: rgba(14, 165, 233, 0.85); color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .floating-call:hover { background: #0284c7; transform: scale(1.05); }
 
         .top-bar {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
@@ -104,33 +124,7 @@
             letter-spacing: 2px; text-transform: uppercase;
         }
 
-        /* أزرار التواصل المصغرة والأنيقة في الأعلى */
-        .contact-box {
-            border-radius: 14px; padding: 10px 15px;
-            margin-bottom: 15px; text-align: center;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-        .contact-box h3 { font-size: 13px; color: #38bdf8; margin: 0; font-weight: 700; }
-        .contact-buttons { display: flex; gap: 8px; }
-        .contact-btn {
-            padding: 6px 12px; border-radius: 10px;
-            font-weight: bold; font-size: 12px; text-decoration: none;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            transition: 0.3s;
-        }
-        .whatsapp-btn {
-            background: rgba(16, 185, 129, 0.15); color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.35);
-        }
-        .whatsapp-btn:hover { background: #10b981; color: white; }
-        .call-btn {
-            background: rgba(56, 189, 248, 0.15); color: #38bdf8;
-            border: 1px solid rgba(56, 189, 248, 0.35);
-        }
-        .call-btn:hover { background: #0ea5e9; color: white; }
-
-        /* صندوق الطقس المصغر والمرتب */
+        /* صندوق الطقس المصغر */
         .weather-box {
             border-radius: 12px; padding: 8px 15px; margin-bottom: 15px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -256,6 +250,16 @@
 </head>
 <body class="dark">
 
+<!-- الأزرار العائمة الثابتة في الشاشة (واتساب على اليسار وزر الاتصال على اليمين) -->
+<a href="https://wa.me/9647818025533" target="_blank" class="floating-btn floating-whatsapp">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448c-.352-.19-.71-.383-1.077-.577l-5.318 1.391zm22.585-20.354c-2.422-2.423-5.642-3.757-9.066-3.758-7.054 0-12.793 5.739-12.795 12.796-.001 2.253.589 4.453 1.708 6.388l-1.808 6.602 6.772-1.776c1.854 1.011 3.968 1.545 6.126 1.546 7.054 0 12.793-5.739 12.795-12.796.002-3.424-1.332-6.645-3.754-9.068zm-9.066 19.349c-1.815 0-3.593-.488-5.145-1.411l-.369-.221-3.83 1.004 1.023-3.733-.24-.381c-1.013-1.611-1.548-3.488-1.547-5.405.002-5.626 4.581-10.205 10.209-10.205 2.727.001 5.288 1.063 7.218 2.993 1.93 1.93 2.991 4.492 2.99 7.219-.002 5.626-4.582 10.205-10.209 10.205zm5.597-7.593c-.305-.153-1.805-.891-2.085-.994-.28-.103-.483-.153-.686.153-.203.305-.788.994-.966 1.198-.178.204-.356.229-.661.076-.305-.153-1.285-.473-2.449-1.512-.905-.806-1.517-1.802-1.696-2.107-.178-.305-.019-.47.133-.623.137-.137.305-.356.458-.534.153-.178.203-.305.305-.51.102-.204.051-.382-.025-.534-.076-.153-.686-1.652-.94-2.261-.248-.598-.501-.517-.686-.527l-.585-.01c-.203 0-.533.076-.813.382-.28.305-1.068 1.044-1.068 2.547 0 1.503 1.095 2.952 1.248 3.156.153.203 2.155 3.291 5.226 4.613.73.315 1.299.503 1.742.645.733.234 1.4.201 1.928.122.591-.088 1.805-.738 2.061-1.451.255-.713.255-1.323.179-1.451-.076-.128-.28-.204-.585-.357z"/></svg>
+    WhatsApp
+</a>
+
+<a href="tel:+9647818025533" class="floating-btn floating-call">
+    📞 Call
+</a>
+
 <div class="container">
     <!-- زر سري صغير جداً في أقصى الزاوية اليمنى العليا (3 ضغطات لفتح لوحة التحكم) -->
     <button class="secret-admin-btn" onclick="secretAdminLogin()" title="Admin"></button>
@@ -265,24 +269,9 @@
         <button class="theme-toggle-btn" onclick="toggleTheme()">☀️ / 🌙 Theme</button>
     </div>
 
-    <!-- شعار الموقع بدون أي قيود أو كلمة مرور -->
     <div class="header-logo">
         <h1>TV SERVICE</h1>
         <p>OFFICIAL MEDIA GALLERY</p>
-    </div>
-
-    <!-- أزرار التواصل مصغرة وفي الأعلى مع أيقونات واتساب واتصال -->
-    <div class="contact-box">
-        <h3>Support & Contact</h3>
-        <div class="contact-buttons">
-            <a href="https://wa.me/9647818025533" target="_blank" class="contact-btn whatsapp-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448c-.352-.19-.71-.383-1.077-.577l-5.318 1.391zm22.585-20.354c-2.422-2.423-5.642-3.757-9.066-3.758-7.054 0-12.793 5.739-12.795 12.796-.001 2.253.589 4.453 1.708 6.388l-1.808 6.602 6.772-1.776c1.854 1.011 3.968 1.545 6.126 1.546 7.054 0 12.793-5.739 12.795-12.796.002-3.424-1.332-6.645-3.754-9.068zm-9.066 19.349c-1.815 0-3.593-.488-5.145-1.411l-.369-.221-3.83 1.004 1.023-3.733-.24-.381c-1.013-1.611-1.548-3.488-1.547-5.405.002-5.626 4.581-10.205 10.209-10.205 2.727.001 5.288 1.063 7.218 2.993 1.93 1.93 2.991 4.492 2.99 7.219-.002 5.626-4.582 10.205-10.209 10.205zm5.597-7.593c-.305-.153-1.805-.891-2.085-.994-.28-.103-.483-.153-.686.153-.203.305-.788.994-.966 1.198-.178.204-.356.229-.661.076-.305-.153-1.285-.473-2.449-1.512-.905-.806-1.517-1.802-1.696-2.107-.178-.305-.019-.47.133-.623.137-.137.305-.356.458-.534.153-.178.203-.305.305-.51.102-.204.051-.382-.025-.534-.076-.153-.686-1.652-.94-2.261-.248-.598-.501-.517-.686-.527l-.585-.01c-.203 0-.533.076-.813.382-.28.305-1.068 1.044-1.068 2.547 0 1.503 1.095 2.952 1.248 3.156.153.203 2.155 3.291 5.226 4.613.73.315 1.299.503 1.742.645.733.234 1.4.201 1.928.122.591-.088 1.805-.738 2.061-1.451.255-.713.255-1.323.179-1.451-.076-.128-.28-.204-.585-.357z"/></svg>
-                WhatsApp
-            </a>
-            <a href="tel:+9647818025533" class="contact-btn call-btn">
-                📞 Call
-            </a>
-        </div>
     </div>
 
     <!-- صندوق الطقس المصغر -->
@@ -341,7 +330,6 @@
     let currentCategory = 'All';
     let secretClicks = 0;
 
-    // زر التحكم السري (3 ضغطات في أقصى اليمين بالأعلى)
     function secretAdminLogin() {
         secretClicks++;
         if (secretClicks >= 3) {
