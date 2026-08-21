@@ -32,7 +32,6 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.6); 
         }
         
-        /* شريط الوقت والتاريخ المتحرك */
         .live-clock {
             text-align: center;
             font-family: 'Courier New', Courier, monospace;
@@ -45,7 +44,6 @@
             letter-spacing: 1px;
         }
 
-        /* اللوكو الفخم (اضغط مرتين للدخول كأدمن) */
         .header-logo { 
             text-align: center; 
             border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
@@ -71,7 +69,6 @@
             letter-spacing: 1px;
         }
 
-        /* لوحة التحكم الخاصة بالمطور (مخفية) */
         #adminPanel { 
             display: none; 
             background: rgba(15, 23, 42, 0.7); 
@@ -114,7 +111,6 @@
         }
         .add-btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* كروت الصور الفخمة */
         .image-card { 
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.07); 
@@ -138,7 +134,6 @@
             font-family: 'Courier New', Courier, monospace;
         }
         
-        /* أزرار الإدارة للصور */
         .admin-controls { display: flex; gap: 10px; margin-top: 15px; }
         .admin-controls button { 
             flex: 1; padding: 10px; border: none; border-radius: 10px; 
@@ -148,7 +143,6 @@
         .edit-btn { background-color: #d97706; color: white; }
         .del-btn { background-color: #dc2626; color: white; }
 
-        /* بطاقة التواصل السريع */
         .contact-box {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -199,7 +193,6 @@
             color: white;
         }
 
-        /* التذييل */
         .footer { 
             text-align: center; margin-top: 25px; padding-top: 20px; 
             border-top: 1px solid rgba(255, 255, 255, 0.08); 
@@ -276,7 +269,7 @@
     function loginAdmin() {
         if (!isAdmin) {
             let password = prompt("أدخل كلمة المرور الخاصة بالمطور:");
-            if (password === "1234") {
+            if (password && password.trim() === "1234") {
                 isAdmin = true;
                 document.getElementById('adminPanel').style.display = 'block';
                 renderGallery();
@@ -287,7 +280,7 @@
         }
     }
 
-    // دالة ضغط الصورة تلقائياً لكي لا تمتلئ الذاكرة
+    // ضغط الصورة تلقائياً لتستوعب عدد هائل من الصور بدون امتلاء الذاكرة
     function compressImage(file, callback) {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -297,9 +290,8 @@
                 let width = img.width;
                 let height = img.height;
                 
-                // تحديد الحد الأقصى لأبعاد الصورة لتقليل الحجم مع الحفاظ على الوضوح
-                const MAX_WIDTH = 1000;
-                const MAX_HEIGHT = 1000;
+                const MAX_WIDTH = 800;
+                const MAX_HEIGHT = 800;
                 
                 if (width > height) {
                     if (width > MAX_WIDTH) {
@@ -318,8 +310,7 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
                 
-                // ضغط الجودة إلى 70% ليصبح حجم الصورة صغير جداً ويتم تخزينها بلا مشاكل
-                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
                 callback(compressedDataUrl);
             };
             img.src = e.target.result;
@@ -347,9 +338,9 @@
                 date: date
             };
 
-            let data = JSON.parse(localStorage.getItem('tvServiceGalleryV3') || '[]');
+            let data = JSON.parse(localStorage.getItem('tvServiceGalleryV4') || '[]');
             data.unshift(newItem); 
-            localStorage.setItem('tvServiceGalleryV3', JSON.stringify(data));
+            localStorage.setItem('tvServiceGalleryV4', JSON.stringify(data));
 
             fileInput.value = '';
             descInput.value = '';
@@ -363,7 +354,7 @@
         const gallery = document.getElementById('gallery');
         gallery.innerHTML = '';
         
-        let data = JSON.parse(localStorage.getItem('tvServiceGalleryV3') || '[]');
+        let data = JSON.parse(localStorage.getItem('tvServiceGalleryV4') || '[]');
 
         if (data.length === 0) {
             gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 30px; font-size:14px;">No images uploaded yet.</p>';
@@ -394,22 +385,22 @@
 
     function deleteItem(id) {
         if (confirm("هل أنت متأكد من حذف هذه الصورة نهائياً؟")) {
-            let data = JSON.parse(localStorage.getItem('tvServiceGalleryV3') || '[]');
+            let data = JSON.parse(localStorage.getItem('tvServiceGalleryV4') || '[]');
             data = data.filter(item => item.id !== id);
-            localStorage.setItem('tvServiceGalleryV3', JSON.stringify(data));
+            localStorage.setItem('tvServiceGalleryV4', JSON.stringify(data));
             renderGallery();
         }
     }
 
     function editItem(id) {
-        let data = JSON.parse(localStorage.getItem('tvServiceGalleryV3') || '[]');
+        let data = JSON.parse(localStorage.getItem('tvServiceGalleryV4') || '[]');
         const currentItem = data.find(i => i.id === id);
         
         if (currentItem) {
             const newDesc = prompt("أدخل الوصف الجديد:", currentItem.desc);
             if (newDesc !== null) {
                 currentItem.desc = newDesc;
-                localStorage.setItem('tvServiceGalleryV3', JSON.stringify(data));
+                localStorage.setItem('tvServiceGalleryV4', JSON.stringify(data));
                 renderGallery();
             }
         }
