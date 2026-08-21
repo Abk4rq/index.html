@@ -250,7 +250,6 @@
 <script>
     let isAdmin = false;
 
-    // ساعة وتاريخ حي
     function updateClock() {
         const now = new Date();
         const optionsDate = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
@@ -276,7 +275,6 @@
         }
     }
 
-    // إعدادات Firebase الخاصة بك
     const firebaseConfig = {
         apiKey: "AIzaSyBLpPGMsn3CS7001EaPrgifTveSwIxw8GE",
         authDomain: "tvservice-d3b56.firebaseapp.com",
@@ -301,31 +299,58 @@
         const file = fileInput.files[0];
         const reader = new FileReader();
 
-        alert("جاري رفع ونشر الصورة للسحابة، انتظر ثواني...");
+        alert("جاري ضغط ونشر الصورة للسحابة، انتظر ثواني...");
 
-        reader.onload = function(e) {
-            const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-            const date = new Date().toLocaleDateString('en-US', options);
+        reader.onload = function(event) {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 800;
+                const MAX_HEIGHT = 800;
+                let width = img.width;
+                let height = img.height;
 
-            db.collection("tvgallery").add({
-                img: e.target.result,
-                desc: descInput.value || "",
-                date: date,
-                timestamp: Date.now()
-            })
-            .then(() => {
-                fileInput.value = '';
-                descInput.value = '';
-                alert("تم نشر الصورة بنجاح وستظهر لدى جميع الزبائن!");
-            })
-            .catch(error => {
-                alert("حدث خطأ أثناء الرفع: " + error.message);
-            });
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+                const date = new Date().toLocaleDateString('en-US', options);
+
+                db.collection("tvgallery").add({
+                    img: compressedDataUrl,
+                    desc: descInput.value || "",
+                    date: date,
+                    timestamp: Date.now()
+                })
+                .then(() => {
+                    fileInput.value = '';
+                    descInput.value = '';
+                    alert("تم نشر الصورة بنجاح وستظهر لدى جميع الزبائن!");
+                })
+                .catch(error => {
+                    alert("خطأ في النشر: " + error.message);
+                });
+            };
         };
         reader.readAsDataURL(file);
     }
 
-    // جلب وعرض الصور بشكل حي ومباشر للجميع
     function loadGallery() {
         db.collection("tvgallery").orderBy("timestamp", "desc").onSnapshot(snapshot => {
             const gallery = document.getElementById('gallery');
@@ -371,7 +396,6 @@
         }
     }
 
-    // تشغيل تحميل المعرض تلقائياً عند فتح الموقع لجميع الزبائن
     loadGallery();
 </script>
 
