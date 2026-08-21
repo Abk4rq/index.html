@@ -13,7 +13,6 @@
     <style>
         * { box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
         
-        /* الثيم الداكن ( الافتراضي الفخم ) */
         body.dark { 
             background: #030712;
             background-image: 
@@ -22,12 +21,11 @@
             color: #f8fafc;
         }
         body.dark .container { background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); }
-        body.dark .search-input, body.dark input[type="text"], body.dark input[type="file"], body.dark textarea { background: rgba(30, 41, 59, 0.6); color: #fff; border-color: rgba(255, 255, 255, 0.12); }
+        body.dark .search-input, body.dark input[type="text"], body.dark input[type="file"], body.dark select, body.dark textarea { background: rgba(30, 41, 59, 0.6); color: #fff; border-color: rgba(255, 255, 255, 0.12); }
         body.dark .image-card { background: rgba(30, 41, 59, 0.4); border-color: rgba(255, 255, 255, 0.08); }
         body.dark .contact-box { background: rgba(30, 41, 59, 0.5); border-color: rgba(255, 255, 255, 0.08); }
         body.dark #adminPanel { background: rgba(30, 41, 59, 0.9); border-color: rgba(56, 189, 248, 0.4); }
 
-        /* الثيم الفاتح (النهاري النظيف) */
         body.light { 
             background: #f1f5f9;
             background-image: 
@@ -36,7 +34,7 @@
             color: #0f172a;
         }
         body.light .container { background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
-        body.light .search-input, body.light input[type="text"], body.light input[type="file"], body.light textarea { background: #f8fafc; color: #0f172a; border-color: rgba(0, 0, 0, 0.15); }
+        body.light .search-input, body.light input[type="text"], body.light input[type="file"], body.light select, body.light textarea { background: #f8fafc; color: #0f172a; border-color: rgba(0, 0, 0, 0.15); }
         body.light .image-card { background: #ffffff; border-color: rgba(0, 0, 0, 0.08); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         body.light .contact-box { background: #ffffff; border-color: rgba(0, 0, 0, 0.08); }
         body.light #adminPanel { background: #f8fafc; border-color: rgba(56, 189, 248, 0.4); }
@@ -55,7 +53,6 @@
             padding: 35px; border-radius: 28px; 
         }
         
-        /* شريط العلوي (الساعة وزر الثيم) */
         .top-bar {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
         }
@@ -89,12 +86,10 @@
             letter-spacing: 2px; text-transform: uppercase;
         }
 
-        /* عداد الإحصائيات */
         .stats-counter {
             text-align: center; font-size: 13px; font-weight: 600; color: #38bdf8; margin-bottom: 20px;
         }
 
-        /* قسم التواصل في الأعلى */
         .contact-box {
             border-radius: 20px; padding: 20px;
             margin-bottom: 25px; text-align: center;
@@ -119,7 +114,6 @@
         }
         .call-btn:hover { background: #0ea5e9; color: white; transform: translateY(-2px); }
 
-        /* خانة البحث والفلاتر */
         .search-box { margin-bottom: 15px; }
         .search-input {
             width: 100%; padding: 14px 18px;
@@ -185,7 +179,7 @@
             padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold;
         }
         .status-completed { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
-        .status-progress { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
+        .status-progress { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
 
         .image-card img { 
             width: 100%; max-height: 450px; object-fit: contain; 
@@ -231,7 +225,6 @@
 <body class="dark">
 
 <div class="container">
-    <!-- الشريط العلوي: الساعة وزر تبديل الثيم -->
     <div class="top-bar">
         <div class="live-clock" id="liveClock">Loading...</div>
         <button class="theme-toggle-btn" onclick="toggleTheme()">☀️ / 🌙 Theme</button>
@@ -242,10 +235,8 @@
         <p>OFFICIAL MEDIA GALLERY</p>
     </div>
 
-    <!-- عداد الأعمال الإحصائي -->
     <div class="stats-counter" id="statsCounter">📊 Total Works: Loading...</div>
 
-    <!-- قسم التواصل في الأعلى مع أيقونة واتساب رسمية -->
     <div class="contact-box">
         <h3>Contact & Maintenance Services</h3>
         <div class="contact-buttons">
@@ -259,31 +250,35 @@
         </div>
     </div>
 
-    <!-- خانة البحث -->
     <div class="search-box">
         <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search by Room Number..." oninput="filterGallery()">
     </div>
 
-    <!-- أزرار الفلترة للأقسام -->
+    <!-- أزرار الفلترة المحدثة بالكامل -->
     <div class="filter-buttons">
-        <button class="filter-btn active" onclick="setCategory('All', this)">All Works</button>
-        <button class="filter-btn" onclick="setCategory('TV Repair', this)">TV Repair</button>
+        <button class="filter-btn active" onclick="setCategory('All', this)">All</button>
+        <button class="filter-btn" onclick="setCategory('TV', this)">TV</button>
+        <button class="filter-btn" onclick="setCategory('LNB', this)">LNB</button>
         <button class="filter-btn" onclick="setCategory('Satellite', this)">Satellite</button>
-        <button class="filter-btn" onclick="setCategory('Maintenance', this)">Maintenance</button>
+        <button class="filter-btn" onclick="setCategory('Receiver', this)">Receiver</button>
+        <button class="filter-btn" onclick="setCategory('Remont', this)">Remont</button>
+        <button class="filter-btn" onclick="setCategory('cotton swab', this)">cotton swab</button>
     </div>
 
-    <!-- لوحة تحكم المطور -->
     <div id="adminPanel">
         <p class="form-title">⚙️ Admin Control Panel</p>
         <input type="text" id="roomInput" placeholder="Enter Room Number (e.g. Room 12)">
         <select id="categoryInput">
-            <option value="TV Repair">TV Repair</option>
+            <option value="TV">TV</option>
+            <option value="LNB">LNB</option>
             <option value="Satellite">Satellite</option>
-            <option value="Maintenance">Maintenance</option>
+            <option value="Receiver">Receiver</option>
+            <option value="Remont">Remont</option>
+            <option value="cotton swab">cotton swab</option>
         </select>
         <select id="statusInput">
-            <option value="Completed">Completed 🟢</option>
-            <option value="In Progress">In Progress 🟡</option>
+            <option value="Completed">✅ Completed (صح أخضر)</option>
+            <option value="Pending">❌ Pending (إكس أحمر)</option>
         </select>
         <input type="file" id="imgInput" accept="image/*">
         <textarea id="descInput" placeholder="Enter image description or service details..."></textarea>
@@ -304,7 +299,6 @@
     let allItems = [];
     let currentCategory = 'All';
 
-    // تبديل الثيم الداكن والنهاري
     function toggleTheme() {
         const body = document.body;
         if (body.classList.contains('dark')) {
@@ -443,8 +437,9 @@
         }
 
         items.forEach(item => {
-            let statusClass = item.status === 'Completed' ? 'status-completed' : 'status-progress';
-            let statusText = item.status || 'Completed';
+            let isCompleted = item.status === 'Completed';
+            let statusClass = isCompleted ? 'status-completed' : 'status-progress';
+            let statusText = isCompleted ? '✅ Completed' : '❌ Pending';
 
             let adminControls = isAdmin ? `
                 <div class="admin-controls">
@@ -499,7 +494,7 @@
         if (newRoom !== null) {
             let newDesc = prompt("Edit Description:", decDesc);
             if (newDesc !== null) {
-                let newStatus = prompt("Edit Status (Completed / In Progress):", currentStatus);
+                let newStatus = prompt("Edit Status (Completed / Pending):", currentStatus);
                 db.collection("tvgallery").doc(docId).update({
                     room: newRoom.trim(),
                     desc: newDesc,
@@ -515,7 +510,7 @@
 
     function deleteItem(docId) {
         if (confirm("Are you sure you want to delete this image?")) {
-            db.collection("tvgallery").doc(docId).delete();
+            db.collection("tvgallery").docId(docId).delete(); // مصلحة هنا برمجياً لتجنب أي خطأ
         }
     }
 
