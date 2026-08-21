@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TV SERVICE - Elite Gallery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <title>TV SERVICE - Official Elite Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     
-    <!-- مكتبات Firebase -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     
     <style>
         * { box-sizing: border-box; }
         body { 
-            font-family: 'Cairo', sans-serif; 
+            font-family: 'Poppins', sans-serif; 
             background: #030712;
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.12) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 40%);
             background-attachment: fixed;
-            margin: 0; padding: 20px; direction: rtl; color: #f8fafc;
+            margin: 0; padding: 20px; direction: ltr; color: #f8fafc;
             user-select: none; -webkit-user-select: none;
         }
 
@@ -67,22 +67,20 @@
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .form-title { color: #38bdf8; font-weight: bold; margin-top: 0; margin-bottom: 15px; font-size: 17px; display: flex; align-items: center; gap: 8px; }
+        .form-title { color: #38bdf8; font-weight: bold; margin-top: 0; margin-bottom: 15px; font-size: 17px; }
         
         input[type="file"], textarea { 
             width: 100%; padding: 14px; margin-bottom: 15px; 
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.12); 
-            border-radius: 14px; color: #fff; font-family: 'Cairo', sans-serif; font-size: 14px;
+            border-radius: 14px; color: #fff; font-family: 'Poppins', sans-serif; font-size: 14px;
             outline: none; transition: 0.3s;
         }
         input[type="file"]:focus, textarea:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
         input[type="file"]::file-selector-button {
             background: linear-gradient(135deg, #0284c7, #0369a1);
             color: white; border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: bold;
-            transition: 0.3s;
         }
-        input[type="file"]::file-selector-button:hover { opacity: 0.9; }
         textarea { resize: vertical; height: 100px; }
         textarea::placeholder { color: #64748b; }
         
@@ -94,7 +92,7 @@
             box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
             transition: 0.3s; 
         }
-        .add-btn:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 15px 25px rgba(16, 185, 129, 0.4); }
+        .add-btn:hover { opacity: 0.95; transform: translateY(-2px); }
 
         .image-card { 
             background: rgba(30, 41, 59, 0.4);
@@ -104,7 +102,6 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
             transition: 0.3s;
         }
-        .image-card:hover { border-color: rgba(56, 189, 248, 0.25); transform: translateY(-3px); }
         .image-card img { 
             width: 100%; max-height: 450px; object-fit: contain; 
             border-radius: 16px; display: block; margin-bottom: 15px; 
@@ -116,13 +113,13 @@
         }
         .date-tag { 
             font-size: 12px; color: #94a3b8; display: block; margin-bottom: 15px; 
-            direction: ltr; text-align: right; font-family: 'Courier New', Courier, monospace;
+            font-family: 'Courier New', Courier, monospace;
         }
         
         .admin-controls { display: flex; gap: 10px; margin-top: 15px; }
         .admin-controls button { 
             flex: 1; padding: 12px; border: none; border-radius: 12px; 
-            font-weight: bold; font-family: 'Cairo', sans-serif; cursor: pointer; 
+            font-weight: bold; font-family: 'Poppins', sans-serif; cursor: pointer; 
             transition: 0.3s; 
         }
         .del-btn { background: rgba(220, 38, 38, 0.2); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.4); }
@@ -185,22 +182,22 @@
     </div>
 
     <div id="adminPanel">
-        <p class="form-title">⚙️ لوحة تحكم المطور السريعة</p>
+        <p class="form-title">⚙️ Admin Control Panel</p>
         <input type="file" id="imgInput" accept="image/*">
-        <textarea id="descInput" placeholder="اكتب وصف الصورة أو تفاصيل العمل هنا..."></textarea>
-        <button class="add-btn" onclick="saveData()">نشر الصورة فوراً للجميع 🚀</button>
+        <textarea id="descInput" placeholder="Enter image description or service details..."></textarea>
+        <button class="add-btn" onclick="saveData()">Publish Image Instantly 🚀</button>
     </div>
 
     <div id="gallery"></div>
 
     <div class="contact-box">
-        <h3>للاتصال وخدمات الصيانة المباشرة</h3>
+        <h3>Contact & Maintenance Services</h3>
         <div class="contact-buttons">
             <a href="https://wa.me/9647818025533" target="_blank" class="contact-btn whatsapp-btn">
-                💬 واتساب
+                💬 WhatsApp
             </a>
             <a href="tel:+9647818025533" class="contact-btn call-btn">
-                📞 اتصال هاتفي
+                📞 Call Now
             </a>
         </div>
     </div>
@@ -215,10 +212,9 @@
 <script>
     let isAdmin = false;
 
-    // ساعة وتاريخ حي ودقيق
     function updateClock() {
         const now = new Date();
-        const optionsDate = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+        const optionsDate = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
         const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
         let dateStr = now.toLocaleDateString('en-US', optionsDate);
         const timeStr = now.toLocaleTimeString('en-US', optionsTime);
@@ -229,19 +225,18 @@
 
     function loginAdmin() {
         if (!isAdmin) {
-            let password = prompt("أدخل كلمة المرور الخاصة بالمطور:");
+            let password = prompt("Enter Admin Password:");
             if (password && password.trim() === "1234") {
                 isAdmin = true;
                 document.getElementById('adminPanel').style.display = 'block';
                 loadGallery();
-                alert("أهلاً بك يا عبد الله، تم تفعيل لوحة التحكم.");
+                alert("Welcome Abdullah, Admin panel activated.");
             } else {
-                alert("كلمة المرور غير صحيحة!");
+                alert("Incorrect Password!");
             }
         }
     }
 
-    // إعدادات Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyBLpPGMsn3CS7001EaPrgifTveSwIxw8GE",
         authDomain: "tvservice-d3b56.firebaseapp.com",
@@ -254,20 +249,18 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // رفع فوري سريع جداً بدون تعقيد الـ Canvas
+    // رفع سريع جداً بدون ضغط أو انتظار
     function saveData() {
         const fileInput = document.getElementById('imgInput');
         const descInput = document.getElementById('descInput');
         
         if (!fileInput.files[0]) {
-            alert("يرجى اختيار صورة أولاً!");
+            alert("Please select an image first!");
             return;
         }
 
         const file = fileInput.files[0];
         const reader = new FileReader();
-
-        alert("جاري رفع ونشر الصورة بسرعة فائقة...");
 
         reader.onload = function(e) {
             const date = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -281,23 +274,22 @@
             .then(() => {
                 fileInput.value = '';
                 descInput.value = '';
-                alert("تم النشر بنجاح وظهرت الصورة لدى الجميع فوراً!");
+                alert("Image published successfully and visible to all users instantly!");
             })
             .catch(error => {
-                alert("خطأ في النشر (قد تكون الصورة كبيرة جداً، جرب صورة أصغر حجماً): " + error.message);
+                alert("Error publishing: " + error.message);
             });
         };
         reader.readAsDataURL(file);
     }
 
-    // جلب وعرض الصور بسلاسة فائقة للجميع
     function loadGallery() {
         db.collection("tvgallery").orderBy("timestamp", "desc").onSnapshot(snapshot => {
             const gallery = document.getElementById('gallery');
             gallery.innerHTML = '';
 
             if (snapshot.empty) {
-                gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px;">لا توجد أعمال منشورة حالياً.</p>';
+                gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px;">No works published yet.</p>';
                 return;
             }
 
@@ -307,7 +299,7 @@
 
                 let adminControls = isAdmin ? `
                     <div class="admin-controls">
-                        <button class="del-btn" onclick="deleteItem('${docId}')">حذف الصورة نهائياً</button>
+                        <button class="del-btn" onclick="deleteItem('${docId}')">Delete Permanently</button>
                     </div>
                 ` : '';
 
@@ -324,12 +316,11 @@
     }
 
     function deleteItem(docId) {
-        if (confirm("هل أنت متأكد من حذف هذه الصورة؟")) {
+        if (confirm("Are you sure you want to delete this image?")) {
             db.collection("tvgallery").doc(docId).delete();
         }
     }
 
-    // تشغيل جلب المعرض تلقائياً للزوار
     loadGallery();
 </script>
 
