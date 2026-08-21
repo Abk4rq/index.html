@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TV SERVICE - Official Gallery</title>
+    <title>TV SERVICE - Elite Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
     <!-- مكتبات Firebase -->
@@ -14,205 +14,170 @@
         * { box-sizing: border-box; }
         body { 
             font-family: 'Cairo', sans-serif; 
-            background: linear-gradient(135deg, #090d16, #111827, #090d16);
+            background: #030712;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 40%);
             background-attachment: fixed;
-            margin: 0; 
-            padding: 20px; 
-            direction: rtl; 
-            color: #fff;
-            user-select: none;
-            -webkit-user-select: none;
+            margin: 0; padding: 20px; direction: rtl; color: #f8fafc;
+            user-select: none; -webkit-user-select: none;
         }
 
         .container { 
-            max-width: 650px; 
-            margin: 0 auto; 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            max-width: 680px; margin: 0 auto; 
+            background: rgba(15, 23, 42, 0.75); 
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 30px; 
-            border-radius: 24px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6); 
+            padding: 35px; border-radius: 28px; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(14, 165, 233, 0.05); 
         }
         
         .live-clock {
-            text-align: center;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            font-weight: bold;
-            background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
+            text-align: center; font-family: 'Courier New', Courier, monospace;
+            font-size: 13px; font-weight: bold;
+            background: linear-gradient(90deg, #38bdf8, #a855f7, #ec4899);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 20px; letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
         .header-logo { 
-            text-align: center; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
-            padding-bottom: 20px; 
-            margin-bottom: 25px; 
-            cursor: pointer;
+            text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+            padding-bottom: 25px; margin-bottom: 30px; cursor: pointer;
+            transition: 0.3s;
         }
+        .header-logo:hover { transform: scale(1.01); }
         .header-logo h1 { 
-            font-size: 42px; 
-            font-weight: 900; 
-            margin: 0; 
-            background: linear-gradient(45deg, #00c6ff, #0072ff, #9b51e0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 3px;
-            text-shadow: 0 5px 15px rgba(0, 198, 255, 0.2);
+            font-size: 44px; font-weight: 900; margin: 0; 
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #b19fff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 3px; text-shadow: 0 10px 30px rgba(0, 242, 254, 0.3);
         }
         .header-logo p { 
-            margin: 6px 0 0 0; 
-            color: #64748b; 
-            font-size: 13px; 
-            font-weight: 600;
-            letter-spacing: 1px;
+            margin: 8px 0 0 0; color: #94a3b8; font-size: 13px; font-weight: 700; 
+            letter-spacing: 2px; text-transform: uppercase;
         }
 
         #adminPanel { 
-            display: none; 
-            background: rgba(15, 23, 42, 0.85); 
-            padding: 20px; 
-            border-radius: 16px; 
-            margin-bottom: 25px; 
-            border: 1px solid rgba(56, 189, 248, 0.3); 
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+            display: none; background: rgba(30, 41, 59, 0.9); 
+            padding: 25px; border-radius: 20px; margin-bottom: 30px; 
+            border: 1px solid rgba(56, 189, 248, 0.4); 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 0 10px 25px rgba(0,0,0,0.4);
+            animation: fadeIn 0.4s ease;
         }
-        .form-title { color: #38bdf8; font-weight: bold; margin-top: 0; margin-bottom: 15px; font-size: 16px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .form-title { color: #38bdf8; font-weight: bold; margin-top: 0; margin-bottom: 15px; font-size: 17px; display: flex; align-items: center; gap: 8px; }
         
         input[type="file"], textarea { 
-            width: 100%; padding: 12px; margin-bottom: 15px; 
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15); 
-            border-radius: 12px; 
-            color: #fff;
-            font-family: 'Cairo', sans-serif; font-size: 14px;
-            outline: none;
+            width: 100%; padding: 14px; margin-bottom: 15px; 
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.12); 
+            border-radius: 14px; color: #fff; font-family: 'Cairo', sans-serif; font-size: 14px;
+            outline: none; transition: 0.3s;
         }
+        input[type="file"]:focus, textarea:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
         input[type="file"]::file-selector-button {
-            background: linear-gradient(45deg, #0284c7, #0369a1);
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            font-weight: bold;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white; border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: bold;
+            transition: 0.3s;
         }
-        textarea { resize: vertical; height: 90px; }
+        input[type="file"]::file-selector-button:hover { opacity: 0.9; }
+        textarea { resize: vertical; height: 100px; }
         textarea::placeholder { color: #64748b; }
         
         .add-btn { 
-            width: 100%; padding: 12px; 
-            background: linear-gradient(45deg, #10b981, #047857); 
-            color: white; border: none; border-radius: 12px; 
+            width: 100%; padding: 14px; 
+            background: linear-gradient(135deg, #10b981, #059669); 
+            color: white; border: none; border-radius: 14px; 
             font-weight: bold; font-size: 16px; cursor: pointer; 
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
             transition: 0.3s; 
         }
-        .add-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .add-btn:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 15px 25px rgba(16, 185, 129, 0.4); }
 
         .image-card { 
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.07); 
-            padding: 18px; margin-top: 25px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            padding: 20px; margin-top: 25px; 
+            border-radius: 22px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+            transition: 0.3s;
         }
+        .image-card:hover { border-color: rgba(56, 189, 248, 0.25); transform: translateY(-3px); }
         .image-card img { 
-            width: 100%; max-height: 420px; object-fit: contain; 
-            border-radius: 14px; display: block; margin-bottom: 15px; 
-            background: rgba(0,0,0,0.4);
+            width: 100%; max-height: 450px; object-fit: contain; 
+            border-radius: 16px; display: block; margin-bottom: 15px; 
+            background: #020617; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         .image-card p { 
-            font-size: 16px; color: #e2e8f0; margin: 10px 0; 
-            line-height: 1.6; font-weight: 600;
-            word-break: break-word;
+            font-size: 16px; color: #f1f5f9; margin: 12px 0; 
+            line-height: 1.7; font-weight: 600; word-break: break-word;
         }
         .date-tag { 
-            font-size: 12px; color: #64748b; display: block; margin-bottom: 15px; 
-            direction: ltr; text-align: right;
-            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px; color: #94a3b8; display: block; margin-bottom: 15px; 
+            direction: ltr; text-align: right; font-family: 'Courier New', Courier, monospace;
         }
         
         .admin-controls { display: flex; gap: 10px; margin-top: 15px; }
         .admin-controls button { 
-            flex: 1; padding: 10px; border: none; border-radius: 10px; 
+            flex: 1; padding: 12px; border: none; border-radius: 12px; 
             font-weight: bold; font-family: 'Cairo', sans-serif; cursor: pointer; 
-            transition: 0.2s; 
+            transition: 0.3s; 
         }
-        .del-btn { background-color: #dc2626; color: white; }
+        .del-btn { background: rgba(220, 38, 38, 0.2); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.4); }
+        .del-btn:hover { background: #dc2626; color: white; }
 
         .contact-box {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(30, 41, 59, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 15px;
-            margin-top: 35px;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 40px;
             text-align: center;
         }
         .contact-box h3 {
-            font-size: 15px;
-            color: #38bdf8;
-            margin: 0 0 12px 0;
+            font-size: 16px; color: #38bdf8; margin: 0 0 15px 0; font-weight: 700;
         }
-        .contact-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
+        .contact-buttons { display: flex; gap: 12px; justify-content: center; }
         .contact-btn {
-            flex: 1;
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 14px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            flex: 1; padding: 12px 18px; border-radius: 14px;
+            font-weight: bold; font-size: 14px; text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             transition: 0.3s;
         }
         .whatsapp-btn {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.15); color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
         }
-        .whatsapp-btn:hover { background: #10b981; color: white; }
+        .whatsapp-btn:hover { background: #10b981; color: white; transform: translateY(-2px); }
+        
         .call-btn {
-            background: rgba(56, 189, 248, 0.15);
-            color: #38bdf8;
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            background: rgba(56, 189, 248, 0.15); color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.35);
         }
-        .call-btn:hover { background: #0ea5e9; color: white; }
+        .call-btn:hover { background: #0ea5e9; color: white; transform: translateY(-2px); }
 
         .footer { 
-            text-align: center; margin-top: 25px; padding-top: 20px; 
+            text-align: center; margin-top: 30px; padding-top: 20px; 
             border-top: 1px solid rgba(255, 255, 255, 0.08); 
         }
-        .footer-text { color: #64748b; font-size: 11px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-text { color: #64748b; font-size: 11px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
         .creation-date { color: #94a3b8; font-size: 12px; margin-bottom: 12px; font-family: 'Courier New', Courier, monospace; }
         
         .dev-name {
-            font-size: 19px;
-            font-weight: 900;
-            background: linear-gradient(45deg, #f43f5e, #a855f7, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
-            display: inline-block;
-            text-shadow: 0 2px 15px rgba(168, 85, 247, 0.2);
+            font-size: 20px; font-weight: 900;
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 1.5px; display: inline-block;
+            text-shadow: 0 5px 20px rgba(255, 117, 140, 0.3);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="live-clock" id="liveClock">Loading Date & Time...</div>
+    <div class="live-clock" id="liveClock">Loading...</div>
 
     <div class="header-logo" ondblclick="loginAdmin()" title="Developer Area">
         <h1>TV SERVICE</h1>
@@ -220,16 +185,16 @@
     </div>
 
     <div id="adminPanel">
-        <p class="form-title">لوحة تحكم المطور ⚙️</p>
+        <p class="form-title">⚙️ لوحة تحكم المطور السريعة</p>
         <input type="file" id="imgInput" accept="image/*">
-        <textarea id="descInput" placeholder="اكتب وصف الصورة هنا..."></textarea>
-        <button class="add-btn" onclick="saveData()">نشر الصورة للجميع</button>
+        <textarea id="descInput" placeholder="اكتب وصف الصورة أو تفاصيل العمل هنا..."></textarea>
+        <button class="add-btn" onclick="saveData()">نشر الصورة فوراً للجميع 🚀</button>
     </div>
 
     <div id="gallery"></div>
 
     <div class="contact-box">
-        <h3>للاتصال وخدمات الصيانة</h3>
+        <h3>للاتصال وخدمات الصيانة المباشرة</h3>
         <div class="contact-buttons">
             <a href="https://wa.me/9647818025533" target="_blank" class="contact-btn whatsapp-btn">
                 💬 واتساب
@@ -250,6 +215,7 @@
 <script>
     let isAdmin = false;
 
+    // ساعة وتاريخ حي ودقيق
     function updateClock() {
         const now = new Date();
         const optionsDate = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
@@ -275,6 +241,7 @@
         }
     }
 
+    // إعدادات Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyBLpPGMsn3CS7001EaPrgifTveSwIxw8GE",
         authDomain: "tvservice-d3b56.firebaseapp.com",
@@ -287,6 +254,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // رفع فوري سريع جداً بدون تعقيد الـ Canvas
     function saveData() {
         const fileInput = document.getElementById('imgInput');
         const descInput = document.getElementById('descInput');
@@ -299,65 +267,37 @@
         const file = fileInput.files[0];
         const reader = new FileReader();
 
-        alert("جاري ضغط ونشر الصورة للسحابة، انتظر ثواني...");
+        alert("جاري رفع ونشر الصورة بسرعة فائقة...");
 
-        reader.onload = function(event) {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 800;
-                const MAX_HEIGHT = 800;
-                let width = img.width;
-                let height = img.height;
+        reader.onload = function(e) {
+            const date = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-                if (width > height) {
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    }
-                } else {
-                    if (height > MAX_HEIGHT) {
-                        width *= MAX_HEIGHT / height;
-                        height = MAX_HEIGHT;
-                    }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-
-                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-                const date = new Date().toLocaleDateString('en-US', options);
-
-                db.collection("tvgallery").add({
-                    img: compressedDataUrl,
-                    desc: descInput.value || "",
-                    date: date,
-                    timestamp: Date.now()
-                })
-                .then(() => {
-                    fileInput.value = '';
-                    descInput.value = '';
-                    alert("تم نشر الصورة بنجاح وستظهر لدى جميع الزبائن!");
-                })
-                .catch(error => {
-                    alert("خطأ في النشر: " + error.message);
-                });
-            };
+            db.collection("tvgallery").add({
+                img: e.target.result,
+                desc: descInput.value || "",
+                date: date,
+                timestamp: Date.now()
+            })
+            .then(() => {
+                fileInput.value = '';
+                descInput.value = '';
+                alert("تم النشر بنجاح وظهرت الصورة لدى الجميع فوراً!");
+            })
+            .catch(error => {
+                alert("خطأ في النشر (قد تكون الصورة كبيرة جداً، جرب صورة أصغر حجماً): " + error.message);
+            });
         };
         reader.readAsDataURL(file);
     }
 
+    // جلب وعرض الصور بسلاسة فائقة للجميع
     function loadGallery() {
         db.collection("tvgallery").orderBy("timestamp", "desc").onSnapshot(snapshot => {
             const gallery = document.getElementById('gallery');
             gallery.innerHTML = '';
 
             if (snapshot.empty) {
-                gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px;">لا توجد صور منشورة حالياً.</p>';
+                gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px;">لا توجد أعمال منشورة حالياً.</p>';
                 return;
             }
 
@@ -365,18 +305,15 @@
                 const item = doc.data();
                 const docId = doc.id;
 
-                let adminControls = '';
-                if (isAdmin) {
-                    adminControls = `
-                        <div class="admin-controls">
-                            <button class="del-btn" onclick="deleteItem('${docId}')">حذف الصورة</button>
-                        </div>
-                    `;
-                }
+                let adminControls = isAdmin ? `
+                    <div class="admin-controls">
+                        <button class="del-btn" onclick="deleteItem('${docId}')">حذف الصورة نهائياً</button>
+                    </div>
+                ` : '';
 
                 gallery.innerHTML += `
                     <div class="image-card">
-                        <img src="${item.img}" alt="Gallery Image">
+                        <img src="${item.img}" alt="TV Service Image">
                         <p>${item.desc}</p>
                         <span class="date-tag">${item.date || ''}</span>
                         ${adminControls}
@@ -387,15 +324,12 @@
     }
 
     function deleteItem(docId) {
-        if (confirm("هل أنت متأكد من حذف هذه الصورة نهائياً؟")) {
-            db.collection("tvgallery").doc(docId).delete().then(() => {
-                alert("تم الحذف بنجاح!");
-            }).catch(error => {
-                alert("خطأ في الحذف: " + error.message);
-            });
+        if (confirm("هل أنت متأكد من حذف هذه الصورة؟")) {
+            db.collection("tvgallery").doc(docId).delete();
         }
     }
 
+    // تشغيل جلب المعرض تلقائياً للزوار
     loadGallery();
 </script>
 
