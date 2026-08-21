@@ -43,7 +43,7 @@
 
         .header-logo { 
             text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
-            padding-bottom: 25px; margin-bottom: 30px; cursor: pointer;
+            padding-bottom: 25px; margin-bottom: 25px; cursor: pointer;
             transition: 0.3s;
         }
         .header-logo:hover { transform: scale(1.01); }
@@ -58,6 +58,24 @@
             letter-spacing: 2px; text-transform: uppercase;
         }
 
+        /* تصميم خانة البحث */
+        .search-box {
+            margin-bottom: 25px;
+        }
+        .search-input {
+            width: 100%; padding: 14px 18px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 16px; color: #fff; font-family: 'Poppins', sans-serif; font-size: 15px;
+            outline: none; transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .search-input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+        }
+        .search-input::placeholder { color: #94a3b8; }
+
         #adminPanel { 
             display: none; background: rgba(30, 41, 59, 0.9); 
             padding: 25px; border-radius: 20px; margin-bottom: 30px; 
@@ -69,20 +87,20 @@
         
         .form-title { color: #38bdf8; font-weight: bold; margin-top: 0; margin-bottom: 15px; font-size: 17px; }
         
-        input[type="file"], textarea { 
+        input[type="text"], input[type="file"], textarea { 
             width: 100%; padding: 14px; margin-bottom: 15px; 
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.12); 
             border-radius: 14px; color: #fff; font-family: 'Poppins', sans-serif; font-size: 14px;
             outline: none; transition: 0.3s;
         }
-        input[type="file"]:focus, textarea:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+        input[type="text"]:focus, input[type="file"]:focus, textarea:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
         input[type="file"]::file-selector-button {
             background: linear-gradient(135deg, #0284c7, #0369a1);
             color: white; border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: bold;
         }
-        textarea { resize: vertical; height: 100px; }
-        textarea::placeholder { color: #64748b; }
+        textarea { resize: vertical; height: 90px; }
+        textarea::placeholder, input[type="text"]::placeholder { color: #64748b; }
         
         .add-btn { 
             width: 100%; padding: 14px; 
@@ -102,6 +120,18 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
             transition: 0.3s;
         }
+        .image-card:hover { border-color: rgba(56, 189, 248, 0.25); }
+        
+        /* تنسيق رقم الغرفة فوق الصورة */
+        .room-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
+            color: white; padding: 6px 14px; border-radius: 10px;
+            font-weight: 700; font-size: 14px; margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+            letter-spacing: 1px;
+        }
+
         .image-card img { 
             width: 100%; max-height: 450px; object-fit: contain; 
             border-radius: 16px; display: block; margin-bottom: 15px; 
@@ -130,10 +160,8 @@
         .contact-box {
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 40px;
-            text-align: center;
+            border-radius: 20px; padding: 20px;
+            margin-top: 40px; text-align: center;
         }
         .contact-box h3 {
             font-size: 16px; color: #38bdf8; margin: 0 0 15px 0; font-weight: 700;
@@ -183,8 +211,14 @@
         <p>OFFICIAL MEDIA GALLERY</p>
     </div>
 
+    <!-- خانة البحث الذكي فوق المعرض -->
+    <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search by Room Number (e.g. 101)..." oninput="filterGallery()">
+    </div>
+
     <div id="adminPanel">
         <p class="form-title">⚙️ Admin Control Panel</p>
+        <input type="text" id="roomInput" placeholder="Enter Room Number (e.g. Room 12)">
         <input type="file" id="imgInput" accept="image/*">
         <textarea id="descInput" placeholder="Enter image description or service details..."></textarea>
         <button class="add-btn" onclick="saveData()">Publish Image Instantly 🚀</button>
@@ -213,6 +247,7 @@
 
 <script>
     let isAdmin = false;
+    let allItems = []; // لتخزين البيانات والبحث فيها
 
     function updateClock() {
         const now = new Date();
@@ -231,7 +266,7 @@
             if (password && password.trim() === "1234") {
                 isAdmin = true;
                 document.getElementById('adminPanel').style.display = 'block';
-                loadGallery();
+                renderGallery(allItems);
                 alert("Welcome Abdullah, Admin panel activated.");
             } else {
                 alert("Incorrect Password!");
@@ -252,6 +287,7 @@
     const db = firebase.firestore();
 
     function saveData() {
+        const roomInput = document.getElementById('roomInput');
         const fileInput = document.getElementById('imgInput');
         const descInput = document.getElementById('descInput');
         
@@ -267,12 +303,14 @@
             const date = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
             db.collection("tvgallery").add({
+                room: roomInput.value.trim() || "General",
                 img: e.target.result,
                 desc: descInput.value || "",
                 date: date,
                 timestamp: Date.now()
             })
             .then(() => {
+                roomInput.value = '';
                 fileInput.value = '';
                 descInput.value = '';
                 alert("Image published successfully!");
@@ -284,50 +322,75 @@
         reader.readAsDataURL(file);
     }
 
+    // جلب البيانات من السحابة وتحديثها في الذاكرة
     function loadGallery() {
         db.collection("tvgallery").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-            const gallery = document.getElementById('gallery');
-            gallery.innerHTML = '';
-
-            if (snapshot.empty) {
-                gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px;">No works published yet.</p>';
-                return;
-            }
-
+            allItems = [];
             snapshot.forEach(doc => {
-                const item = doc.data();
-                const docId = doc.id;
-
-                let adminControls = isAdmin ? `
-                    <div class="admin-controls">
-                        <button class="edit-btn" onclick="editItem('${docId}', '${encodeURIComponent(item.desc || '')}')">Edit Description</button>
-                        <button class="del-btn" onclick="deleteItem('${docId}')">Delete</button>
-                    </div>
-                ` : '';
-
-                gallery.innerHTML += `
-                    <div class="image-card">
-                        <img src="${item.img}" alt="TV Service Image">
-                        <p>${item.desc}</p>
-                        <span class="date-tag">${item.date || ''}</span>
-                        ${adminControls}
-                    </div>
-                `;
+                allItems.push({ id: doc.id, ...doc.data() });
             });
+            renderGallery(allItems);
         });
     }
 
-    function editItem(docId, currentDesc) {
-        let decodedDesc = decodeURIComponent(currentDesc);
-        let newDesc = prompt("Edit image description:", decodedDesc);
-        if (newDesc !== null) {
-            db.collection("tvgallery").doc(docId).update({
-                desc: newDesc
-            }).then(() => {
-                alert("Description updated successfully!");
-            }).catch(error => {
-                alert("Error updating: " + error.message);
-            });
+    // رسم وعرض الصور بناءً على البيانات أو نتائج البحث
+    function renderGallery(items) {
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = '';
+
+        if (items.length === 0) {
+            gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px;">No works found.</p>';
+            return;
+        }
+
+        items.forEach(item => {
+            let adminControls = isAdmin ? `
+                <div class="admin-controls">
+                    <button class="edit-btn" onclick="editItem('${item.id}', '${encodeURIComponent(item.room || '')}', '${encodeURIComponent(item.desc || '')}')">Edit</button>
+                    <button class="del-btn" onclick="deleteItem('${item.id}')">Delete</button>
+                </div>
+            ` : '';
+
+            gallery.innerHTML += `
+                <div class="image-card">
+                    <div class="room-badge">🏠 Room: ${item.room || 'General'}</div>
+                    <img src="${item.img}" alt="TV Service Image">
+                    <p>${item.desc}</p>
+                    <span class="date-tag">${item.date || ''}</span>
+                    ${adminControls}
+                </div>
+            `;
+        });
+    }
+
+    // وظيفة البحث الفوري حسب رقم الغرفة أو الوصف
+    function filterGallery() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const filtered = allItems.filter(item => {
+            const roomMatch = (item.room || "").toLowerCase().includes(query);
+            const descMatch = (item.desc || "").toLowerCase().includes(query);
+            return roomMatch || descMatch;
+        });
+        renderGallery(filtered);
+    }
+
+    function editItem(docId, currentRoom, currentDesc) {
+        let decRoom = decodeURIComponent(currentRoom);
+        let decDesc = decodeURIComponent(currentDesc);
+        
+        let newRoom = prompt("Edit Room Number:", decRoom);
+        if (newRoom !== null) {
+            let newDesc = prompt("Edit Description:", decDesc);
+            if (newDesc !== null) {
+                db.collection("tvgallery").doc(docId).update({
+                    room: newRoom.trim(),
+                    desc: newDesc
+                }).then(() => {
+                    alert("Updated successfully!");
+                }).catch(error => {
+                    alert("Error updating: " + error.message);
+                });
+            }
         }
     }
 
