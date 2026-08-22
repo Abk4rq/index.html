@@ -57,10 +57,18 @@
             user-select: none; -webkit-user-select: none;
         }
 
+        /* دعم الكمبيوتر بعرض أوسع وأجمل */
         .container { 
-            max-width: 680px; margin: 0 auto; 
+            max-width: 950px; margin: 0 auto; 
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             padding: 35px; border-radius: 28px; position: relative;
+        }
+
+        /* شبكة عرض الصور للكمبيوتر والهواتف (أكثر من صورة بصف واحد) */
+        #gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
         }
         
         /* زر التحكم السري الصغير في أعلى اليمين */
@@ -72,7 +80,7 @@
         }
         .secret-admin-btn:hover { background: #38bdf8; transform: scale(1.3); }
 
-        /* الأزرار العائمة الثابتة على الجانب الأيمن (تحت بعضها وبدون كتابة) */
+        /* الأزرار العائمة الثابتة على الجانب الأيمن */
         .floating-container {
             position: fixed; right: 15px; bottom: 20px; z-index: 999;
             display: flex; flex-direction: column; gap: 10px;
@@ -126,7 +134,6 @@
             letter-spacing: 2px; text-transform: uppercase;
         }
 
-        /* صندوق الطقس المصغر */
         .weather-box {
             border-radius: 12px; padding: 8px 15px; margin-bottom: 15px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -149,7 +156,7 @@
         .search-input:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
 
         .filter-buttons {
-            display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;
+            display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; justify-content: center; flex-wrap: wrap;
         }
         .filter-btn {
             background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);
@@ -188,9 +195,10 @@
         .add-btn:hover { opacity: 0.95; transform: translateY(-2px); }
 
         .image-card { 
-            padding: 18px; margin-top: 20px; border-radius: 20px; 
+            padding: 18px; margin-top: 0; border-radius: 20px; 
             box-shadow: 0 12px 30px rgba(0,0,0,0.1); 
             border: 1px solid rgba(100, 116, 139, 0.2);
+            display: flex; flex-direction: column; justify-content: space-between;
         }
         
         .card-header-info {
@@ -208,12 +216,27 @@
         .status-progress { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
 
         .image-card img { 
-            width: 100%; max-height: 400px; object-fit: contain; 
+            width: 100%; height: 220px; object-fit: cover; 
             border-radius: 14px; display: block; margin-bottom: 12px; 
             background: #020617; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            cursor: pointer; transition: 0.3s;
         }
+        .image-card img:hover { opacity: 0.9; transform: scale(1.02); }
+
+        /* نافذة تكبير الصورة بملء الشاشة (LightBox) */
+        #lightbox {
+            display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); align-items: center; justify-content: center; padding: 20px;
+        }
+        #lightbox img {
+            max-width: 95%; max-height: 90vh; border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+        #lightbox span {
+            position: absolute; top: 20px; right: 30px; font-size: 40px; color: #fff; cursor: pointer; font-weight: bold;
+        }
+
         .image-card p { 
-            font-size: 15px; margin: 10px 0; line-height: 1.6; font-weight: 600; word-break: break-word;
+            font-size: 14px; margin: 10px 0; line-height: 1.6; font-weight: 600; word-break: break-word;
         }
         .date-tag { 
             font-size: 11px; display: block; margin-bottom: 12px; 
@@ -237,7 +260,7 @@
         .del-btn:hover { background: #dc2626; color: white; }
 
         .footer { 
-            text-align: center; margin-top: 25px; padding-top: 15px; 
+            text-align: center; margin-top: 35px; padding-top: 15px; grid-column: 1 / -1;
             border-top: 1px solid rgba(100, 116, 139, 0.2); 
         }
         .footer-text { font-size: 10px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 2px; }
@@ -252,7 +275,13 @@
 </head>
 <body class="dark">
 
-<!-- أزرار التواصل العائمة (أيقونات فقط، عمودية، على جهة اليمين) -->
+<!-- نافذة تكبير الصورة -->
+<div id="lightbox" onclick="closeLightbox()">
+    <span onclick="closeLightbox()">&times;</span>
+    <img id="lightboxImg" src="">
+</div>
+
+<!-- أزرار التواصل العائمة -->
 <div class="floating-container">
     <a href="https://wa.me/9647818025533" target="_blank" class="floating-icon-btn floating-whatsapp" title="WhatsApp">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448c-.352-.19-.71-.383-1.077-.577l-5.318 1.391zm22.585-20.354c-2.422-2.423-5.642-3.757-9.066-3.758-7.054 0-12.793 5.739-12.795 12.796-.001 2.253.589 4.453 1.708 6.388l-1.808 6.602 6.772-1.776c1.854 1.011 3.968 1.545 6.126 1.546 7.054 0 12.793-5.739 12.795-12.796.002-3.424-1.332-6.645-3.754-9.068zm-9.066 19.349c-1.815 0-3.593-.488-5.145-1.411l-.369-.221-3.83 1.004 1.023-3.733-.24-.381c-1.013-1.611-1.548-3.488-1.547-5.405.002-5.626 4.581-10.205 10.209-10.205 2.727.001 5.288 1.063 7.218 2.993 1.93 1.93 2.991 4.492 2.99 7.219-.002 5.626-4.582 10.205-10.209 10.205zm5.597-7.593c-.305-.153-1.805-.891-2.085-.994-.28-.103-.483-.153-.686.153-.203.305-.788.994-.966 1.198-.178.204-.356.229-.661.076-.305-.153-1.285-.473-2.449-1.512-.905-.806-1.517-1.802-1.696-2.107-.178-.305-.019-.47.133-.623.137-.137.305-.356.458-.534.153-.178.203-.305.305-.51.102-.204.051-.382-.025-.534-.076-.153-.686-1.652-.94-2.261-.248-.598-.501-.517-.686-.527l-.585-.01c-.203 0-.533.076-.813.382-.28.305-1.068 1.044-1.068 2.547 0 1.503 1.095 2.952 1.248 3.156.153.203 2.155 3.291 5.226 4.613.73.315 1.299.503 1.742.645.733.234 1.4.201 1.928.122.591-.088 1.805-.738 2.061-1.451.255-.713.255-1.323.179-1.451-.076-.128-.28-.204-.585-.357z"/></svg>
@@ -263,7 +292,6 @@
 </div>
 
 <div class="container">
-    <!-- زر التحكم السري الصغير في أعلى اليمين (3 ضغطات للوحة التحكم) -->
     <button class="secret-admin-btn" onclick="secretAdminLogin()" title="Admin"></button>
 
     <div class="top-bar">
@@ -276,7 +304,6 @@
         <p>OFFICIAL MEDIA GALLERY</p>
     </div>
 
-    <!-- صندوق الطقس المصغر -->
     <div class="weather-box" id="weatherBox">
         📍 <span>Basrah</span>: <span id="weatherText">Stable Signal 🟢</span>
     </div>
@@ -312,9 +339,10 @@
             <option value="Completed">✅ Completed (صح أخضر)</option>
             <option value="Pending">❌ Pending (إكس أحمر)</option>
         </select>
-        <input type="file" id="imgInput" accept="image/*">
+        <!-- إمكانية اختيار أكثر من صورة في نفس الوقت -->
+        <input type="file" id="imgInput" accept="image/*" multiple>
         <textarea id="descInput" placeholder="Enter image description or service details..."></textarea>
-        <button class="add-btn" onclick="saveData()">Publish Image Instantly 🚀</button>
+        <button class="add-btn" onclick="saveData()">Publish Images Instantly 🚀</button>
     </div>
 
     <div id="gallery"></div>
@@ -339,6 +367,16 @@
             loginAdmin();
         }
         setTimeout(() => { secretClicks = 0; }, 1500);
+    }
+
+    // فتح الصورة بملء الشاشة
+    function openLightbox(imgSrc) {
+        document.getElementById('lightboxImg').src = imgSrc;
+        document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
     }
 
     async function fetchWeather() {
@@ -376,7 +414,7 @@
     function loginAdmin() {
         if (!isAdmin) {
             let password = prompt("Enter Admin Password:");
-            if (password && password.trim() === "1234") {
+            if (password && password.trim() === "Abdullah2001") {
                 isAdmin = true;
                 document.getElementById('adminPanel').style.display = 'block';
                 renderGallery(allItems);
@@ -399,6 +437,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // رفع أكثر من صورة دفعة واحدة وضغطها آلياً
     function saveData() {
         const roomInput = document.getElementById('roomInput');
         const categoryInput = document.getElementById('categoryInput');
@@ -406,62 +445,70 @@
         const fileInput = document.getElementById('imgInput');
         const descInput = document.getElementById('descInput');
         
-        if (!fileInput.files[0]) {
-            alert("Please select an image first!");
+        if (fileInput.files.length === 0) {
+            alert("Please select at least one image!");
             return;
         }
 
-        const file = fileInput.files[0];
-        const reader = new FileReader();
+        const files = fileInput.files;
+        alert(`Compressing and publishing ${files.length} image(s) instantly...`);
 
-        alert("Compressing and publishing image instantly...");
+        let completedCount = 0;
 
-        reader.onload = function(event) {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 900;
-                const MAX_HEIGHT = 900;
-                let width = img.width;
-                let height = img.height;
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
 
-                if (width > height) {
-                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                } else {
-                    if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-                }
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 900;
+                    const MAX_HEIGHT = 900;
+                    let width = img.width;
+                    let height = img.height;
 
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
+                    if (width > height) {
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    } else {
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                    }
 
-                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
-                const date = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
 
-                db.collection("tvgallery").add({
-                    room: roomInput.value.trim() || "General",
-                    category: categoryInput.value,
-                    status: statusInput.value,
-                    likes: 0,
-                    img: compressedDataUrl,
-                    desc: descInput.value || "",
-                    date: date,
-                    timestamp: Date.now()
-                })
-                .then(() => {
-                    roomInput.value = '';
-                    fileInput.value = '';
-                    descInput.value = '';
-                    alert("Image published permanently and saved successfully!");
-                })
-                .catch(error => {
-                    alert("Error publishing: " + error.message);
-                });
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+                    const date = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+                    db.collection("tvgallery").add({
+                        room: roomInput.value.trim() || "General",
+                        category: categoryInput.value,
+                        status: statusInput.value,
+                        likes: 0,
+                        img: compressedDataUrl,
+                        desc: descInput.value || "",
+                        date: date,
+                        timestamp: Date.now() + i // ترتيب زمني تسلسلي دقيق
+                    })
+                    .then(() => {
+                        completedCount++;
+                        if (completedCount === files.length) {
+                            roomInput.value = '';
+                            fileInput.value = '';
+                            descInput.value = '';
+                            alert("All images published permanently and saved successfully!");
+                        }
+                    })
+                    .catch(error => {
+                        alert("Error publishing: " + error.message);
+                    });
+                };
             };
-        };
-        reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
+        }
     }
 
     function loadGallery() {
@@ -487,7 +534,7 @@
         gallery.innerHTML = '';
 
         if (items.length === 0) {
-            gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px;">No works found.</p>';
+            gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px; grid-column: 1/-1;">No works found.</p>';
             return;
         }
 
@@ -506,18 +553,22 @@
 
             gallery.innerHTML += `
                 <div class="image-card">
-                    <div class="card-header-info">
-                        <div class="room-badge">🏠 Room: ${item.room || 'General'}</div>
-                        <div class="status-badge ${statusClass}">${statusText}</div>
+                    <div>
+                        <div class="card-header-info">
+                            <div class="room-badge">🏠 Room: ${item.room || 'General'}</div>
+                            <div class="status-badge ${statusClass}">${statusText}</div>
+                        </div>
+                        <img src="${item.img}" alt="TV Service Image" onclick="openLightbox('${item.img}')" title="Click to view full screen">
+                        <p>${item.desc}</p>
                     </div>
-                    <img src="${item.img}" alt="TV Service Image">
-                    <p>${item.desc}</p>
-                    <span class="date-tag">${item.date || ''}</span>
-                    <div class="card-actions">
-                        <button class="share-btn" onclick="shareCard('${item.room || 'General'}', '${encodeURIComponent(item.desc || '')}')">📤 Share</button>
-                        <button class="like-btn" onclick="likeItem('${item.id}', ${currentLikes})">❤️ ${currentLikes}</button>
+                    <div>
+                        <span class="date-tag">${item.date || ''}</span>
+                        <div class="card-actions">
+                            <button class="share-btn" onclick="shareCard('${item.room || 'General'}', '${encodeURIComponent(item.desc || '')}')">📤 Share</button>
+                            <button class="like-btn" onclick="likeItem('${item.id}', ${currentLikes})">❤️ ${currentLikes}</button>
+                        </div>
+                        ${adminControls}
                     </div>
-                    ${adminControls}
                 </div>
             `;
         });
