@@ -57,18 +57,10 @@
             user-select: none; -webkit-user-select: none;
         }
 
-        /* دعم الكمبيوتر بعرض أوسع وأجمل */
         .container { 
-            max-width: 950px; margin: 0 auto; 
+            max-width: 680px; margin: 0 auto; 
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             padding: 35px; border-radius: 28px; position: relative;
-        }
-
-        /* شبكة عرض الصور للكمبيوتر والهواتف (أكثر من صورة بصف واحد) */
-        #gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
         }
         
         /* زر التحكم السري الصغير في أعلى اليمين */
@@ -156,7 +148,7 @@
         .search-input:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
 
         .filter-buttons {
-            display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; justify-content: center; flex-wrap: wrap;
+            display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;
         }
         .filter-btn {
             background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);
@@ -195,10 +187,9 @@
         .add-btn:hover { opacity: 0.95; transform: translateY(-2px); }
 
         .image-card { 
-            padding: 18px; margin-top: 0; border-radius: 20px; 
+            padding: 18px; margin-top: 20px; border-radius: 20px; 
             box-shadow: 0 12px 30px rgba(0,0,0,0.1); 
             border: 1px solid rgba(100, 116, 139, 0.2);
-            display: flex; flex-direction: column; justify-content: space-between;
         }
         
         .card-header-info {
@@ -215,15 +206,19 @@
         .status-completed { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
         .status-progress { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
 
+        /* حاوية الصور داخل الكارت (تدعم صورة واحدة أو صورتين بنفس المربع) */
+        .images-container {
+            display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;
+        }
         .image-card img { 
-            width: 100%; height: 220px; object-fit: cover; 
-            border-radius: 14px; display: block; margin-bottom: 12px; 
+            flex: 1; min-width: 120px; max-height: 350px; object-fit: contain; 
+            border-radius: 14px; display: block; 
             background: #020617; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             cursor: pointer; transition: 0.3s;
         }
-        .image-card img:hover { opacity: 0.9; transform: scale(1.02); }
+        .image-card img:hover { opacity: 0.95; transform: scale(1.01); }
 
-        /* نافذة تكبير الصورة بملء الشاشة (LightBox) */
+        /* نافذة تكبير الصورة بملء الشاشة */
         #lightbox {
             display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.9); align-items: center; justify-content: center; padding: 20px;
@@ -236,7 +231,7 @@
         }
 
         .image-card p { 
-            font-size: 14px; margin: 10px 0; line-height: 1.6; font-weight: 600; word-break: break-word;
+            font-size: 15px; margin: 10px 0; line-height: 1.6; font-weight: 600; word-break: break-word;
         }
         .date-tag { 
             font-size: 11px; display: block; margin-bottom: 12px; 
@@ -260,7 +255,7 @@
         .del-btn:hover { background: #dc2626; color: white; }
 
         .footer { 
-            text-align: center; margin-top: 35px; padding-top: 15px; grid-column: 1 / -1;
+            text-align: center; margin-top: 25px; padding-top: 15px; 
             border-top: 1px solid rgba(100, 116, 139, 0.2); 
         }
         .footer-text { font-size: 10px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 2px; }
@@ -275,7 +270,7 @@
 </head>
 <body class="dark">
 
-<!-- نافذة تكبير الصورة -->
+<!-- نافذة تكبير الصورة بملء الشاشة -->
 <div id="lightbox" onclick="closeLightbox()">
     <span onclick="closeLightbox()">&times;</span>
     <img id="lightboxImg" src="">
@@ -339,10 +334,10 @@
             <option value="Completed">✅ Completed (صح أخضر)</option>
             <option value="Pending">❌ Pending (إكس أحمر)</option>
         </select>
-        <!-- إمكانية اختيار أكثر من صورة في نفس الوقت -->
+        <!-- إمكانية اختيار صورتين أو أكثر لتظهر داخل نفس الكارت -->
         <input type="file" id="imgInput" accept="image/*" multiple>
         <textarea id="descInput" placeholder="Enter image description or service details..."></textarea>
-        <button class="add-btn" onclick="saveData()">Publish Images Instantly 🚀</button>
+        <button class="add-btn" onclick="saveData()">Publish Image Instantly 🚀</button>
     </div>
 
     <div id="gallery"></div>
@@ -369,7 +364,6 @@
         setTimeout(() => { secretClicks = 0; }, 1500);
     }
 
-    // فتح الصورة بملء الشاشة
     function openLightbox(imgSrc) {
         document.getElementById('lightboxImg').src = imgSrc;
         document.getElementById('lightbox').style.display = 'flex';
@@ -437,7 +431,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // رفع أكثر من صورة دفعة واحدة وضغطها آلياً
+    // دمج الصور المرفوعة في كارت واحد داخل قاعدة البيانات
     function saveData() {
         const roomInput = document.getElementById('roomInput');
         const categoryInput = document.getElementById('categoryInput');
@@ -451,9 +445,10 @@
         }
 
         const files = fileInput.files;
-        alert(`Compressing and publishing ${files.length} image(s) instantly...`);
+        alert(`Compressing and publishing ${files.length} image(s) into one card...`);
 
-        let completedCount = 0;
+        let compressedImages = [];
+        let processedCount = 0;
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
@@ -480,31 +475,33 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
-                    const date = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    compressedImages.push(canvas.toDataURL('image/jpeg', 0.75));
+                    processedCount++;
 
-                    db.collection("tvgallery").add({
-                        room: roomInput.value.trim() || "General",
-                        category: categoryInput.value,
-                        status: statusInput.value,
-                        likes: 0,
-                        img: compressedDataUrl,
-                        desc: descInput.value || "",
-                        date: date,
-                        timestamp: Date.now() + i // ترتيب زمني تسلسلي دقيق
-                    })
-                    .then(() => {
-                        completedCount++;
-                        if (completedCount === files.length) {
+                    if (processedCount === files.length) {
+                        // حفظ الصور معاً في نفس الدوكيومنت (نفس الكارت)
+                        const date = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+                        db.collection("tvgallery").add({
+                            room: roomInput.value.trim() || "General",
+                            category: categoryInput.value,
+                            status: statusInput.value,
+                            likes: 0,
+                            images: compressedImages, // مصفوفة الصور داخل نفس الحقل
+                            desc: descInput.value || "",
+                            date: date,
+                            timestamp: Date.now()
+                        })
+                        .then(() => {
                             roomInput.value = '';
                             fileInput.value = '';
                             descInput.value = '';
-                            alert("All images published permanently and saved successfully!");
-                        }
-                    })
-                    .catch(error => {
-                        alert("Error publishing: " + error.message);
-                    });
+                            alert("Card published successfully with all images!");
+                        })
+                        .catch(error => {
+                            alert("Error publishing: " + error.message);
+                        });
+                    }
                 };
             };
             reader.readAsDataURL(file);
@@ -515,7 +512,12 @@
         db.collection("tvgallery").orderBy("timestamp", "desc").onSnapshot(snapshot => {
             allItems = [];
             snapshot.forEach(doc => {
-                allItems.push({ id: doc.id, ...doc.data() });
+                let data = doc.data();
+                // توافق تام مع الصور القديمة (التي تحتوي على img مفردة) والصور الجديدة (التي تحتوي على images مجمعة)
+                if (!data.images && data.img) {
+                    data.images = [data.img];
+                }
+                allItems.push({ id: doc.id, ...data });
             });
             document.getElementById('statsCounter').innerText = `📊 Total Works Published: ${allItems.length}`;
             filterGallery();
@@ -534,7 +536,7 @@
         gallery.innerHTML = '';
 
         if (items.length === 0) {
-            gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px; grid-column: 1/-1;">No works found.</p>';
+            gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px;">No works found.</p>';
             return;
         }
 
@@ -543,6 +545,13 @@
             let statusClass = isCompleted ? 'status-completed' : 'status-progress';
             let statusText = isCompleted ? '✅ Completed' : '❌ Pending';
             let currentLikes = item.likes || 0;
+            let imgList = item.images || [item.img];
+
+            // توليد كود لعرض الصور داخل نفس المربع (سواء صورة واحدة أو صورتين أو أكثر بجانب بعضها)
+            let imgsHtml = '';
+            imgList.forEach(url => {
+                imgsHtml += `<img src="${url}" alt="TV Service Image" onclick="openLightbox('${url}')" title="Click to view full screen">`;
+            });
 
             let adminControls = isAdmin ? `
                 <div class="admin-controls">
@@ -553,22 +562,20 @@
 
             gallery.innerHTML += `
                 <div class="image-card">
-                    <div>
-                        <div class="card-header-info">
-                            <div class="room-badge">🏠 Room: ${item.room || 'General'}</div>
-                            <div class="status-badge ${statusClass}">${statusText}</div>
-                        </div>
-                        <img src="${item.img}" alt="TV Service Image" onclick="openLightbox('${item.img}')" title="Click to view full screen">
-                        <p>${item.desc}</p>
+                    <div class="card-header-info">
+                        <div class="room-badge">🏠 Room: ${item.room || 'General'}</div>
+                        <div class="status-badge ${statusClass}">${statusText}</div>
                     </div>
-                    <div>
-                        <span class="date-tag">${item.date || ''}</span>
-                        <div class="card-actions">
-                            <button class="share-btn" onclick="shareCard('${item.room || 'General'}', '${encodeURIComponent(item.desc || '')}')">📤 Share</button>
-                            <button class="like-btn" onclick="likeItem('${item.id}', ${currentLikes})">❤️ ${currentLikes}</button>
-                        </div>
-                        ${adminControls}
+                    <div class="images-container">
+                        ${imgsHtml}
                     </div>
+                    <p>${item.desc}</p>
+                    <span class="date-tag">${item.date || ''}</span>
+                    <div class="card-actions">
+                        <button class="share-btn" onclick="shareCard('${item.room || 'General'}', '${encodeURIComponent(item.desc || '')}')">📤 Share</button>
+                        <button class="like-btn" onclick="likeItem('${item.id}', ${currentLikes})">❤️ ${currentLikes}</button>
+                    </div>
+                    ${adminControls}
                 </div>
             `;
         });
