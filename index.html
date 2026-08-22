@@ -12,38 +12,23 @@
     
     <style>
         * { box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
-        
-        @keyframes moveStars {
-            from { background-position: 0 0; }
-            to { background-position: -10000px 5000px; }
-        }
 
+        /* خلفية ثابتة فخمة بدون نجوم متحركة */
         body.dark { 
             background: #030712;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 40px 70px, #38bdf8, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 90px 40px, #a855f7, rgba(0,0,0,0));
-            background-repeat: repeat;
-            background-size: 200px 200px;
-            animation: moveStars 60s linear infinite;
             color: #f8fafc;
         }
-        body.dark .container { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); }
-        body.dark .search-input, body.dark input[type="text"], body.dark input[type="file"], body.dark select, body.dark textarea { background: rgba(30, 41, 59, 0.6); color: #fff; border-color: rgba(255, 255, 255, 0.12); }
-        body.dark .image-card { background: rgba(30, 41, 59, 0.5); border-color: rgba(255, 255, 255, 0.08); }
-        body.dark .weather-box { background: rgba(30, 41, 59, 0.6); border-color: rgba(255, 255, 255, 0.08); }
+        body.dark .container { background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); }
+        body.dark .search-input, body.dark input[type="text"], body.dark input[type="file"], body.dark select, body.dark textarea { background: rgba(30, 41, 59, 0.8); color: #fff; border-color: rgba(255, 255, 255, 0.12); }
+        body.dark .image-card { background: rgba(30, 41, 59, 0.6); border-color: rgba(255, 255, 255, 0.08); }
+        body.dark .weather-box { background: rgba(30, 41, 59, 0.8); border-color: rgba(255, 255, 255, 0.08); }
         body.dark #adminPanel { background: rgba(30, 41, 59, 0.95); border-color: rgba(56, 189, 248, 0.4); }
 
         body.light { 
             background: #f1f5f9;
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, #cbd5e1, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 40px 70px, #0ea5e9, rgba(0,0,0,0));
-            background-size: 200px 200px;
             color: #0f172a;
         }
-        body.light .container { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
+        body.light .container { background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
         body.light .search-input, body.light input[type="text"], body.light input[type="file"], body.light select, body.light textarea { background: #f8fafc; color: #0f172a; border-color: rgba(0, 0, 0, 0.15); }
         body.light .image-card { background: #ffffff; border-color: rgba(0, 0, 0, 0.08); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         body.light .weather-box { background: #ffffff; border-color: rgba(0, 0, 0, 0.08); }
@@ -52,18 +37,17 @@
 
         body { 
             font-family: 'Poppins', sans-serif; 
-            background-attachment: fixed;
             margin: 0; padding: 20px; direction: ltr;
             user-select: none; -webkit-user-select: none;
         }
 
+        /* تنسيق متوازن ومرن لعرض الكمبيوتر والهواتف */
         .container { 
-            max-width: 680px; margin: 0 auto; 
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            padding: 35px; border-radius: 28px; position: relative;
+            max-width: 750px; margin: 0 auto; 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 30px; border-radius: 24px; position: relative;
         }
         
-        /* زر التحكم السري الصغير في أعلى اليمين */
         .secret-admin-btn {
             position: absolute; top: 15px; right: 20px;
             width: 12px; height: 12px; background: rgba(56, 189, 248, 0.4);
@@ -72,7 +56,6 @@
         }
         .secret-admin-btn:hover { background: #38bdf8; transform: scale(1.3); }
 
-        /* الأزرار العائمة الثابتة على الجانب الأيمن */
         .floating-container {
             position: fixed; right: 15px; bottom: 20px; z-index: 999;
             display: flex; flex-direction: column; gap: 10px;
@@ -81,22 +64,14 @@
             width: 48px; height: 48px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             text-decoration: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px); transition: 0.3s;
+            transition: 0.3s;
         }
-        .floating-whatsapp {
-            background: rgba(16, 185, 129, 0.9); color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
+        .floating-whatsapp { background: rgba(16, 185, 129, 0.9); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); }
         .floating-whatsapp:hover { background: #10b981; transform: scale(1.1); }
-        .floating-call {
-            background: rgba(14, 165, 233, 0.9); color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
+        .floating-call { background: rgba(14, 165, 233, 0.9); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); }
         .floating-call:hover { background: #0284c7; transform: scale(1.1); }
 
-        .top-bar {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
-        }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .live-clock {
             font-family: 'Courier New', Courier, monospace;
             font-size: 11px; font-weight: bold;
@@ -111,45 +86,32 @@
         }
         .theme-toggle-btn:hover { background: #38bdf8; color: #fff; }
 
-        .header-logo { 
-            text-align: center; border-bottom: 1px solid rgba(100, 116, 139, 0.2); 
-            padding-bottom: 20px; margin-bottom: 15px;
-        }
+        .header-logo { text-align: center; border-bottom: 1px solid rgba(100, 116, 139, 0.2); padding-bottom: 20px; margin-bottom: 15px; }
         .header-logo h1 { 
-            font-size: 38px; font-weight: 900; margin: 0; 
+            font-size: 36px; font-weight: 900; margin: 0; 
             background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #b19fff 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             letter-spacing: 2px;
         }
-        .header-logo p { 
-            margin: 5px 0 0 0; color: #94a3b8; font-size: 12px; font-weight: 700; 
-            letter-spacing: 2px; text-transform: uppercase;
-        }
+        .header-logo p { margin: 5px 0 0 0; color: #94a3b8; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
 
         .weather-box {
             border-radius: 12px; padding: 8px 15px; margin-bottom: 15px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            font-size: 12px; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-size: 12px; font-weight: 600; border: 1px solid rgba(56, 189, 248, 0.2);
         }
         .weather-box span { color: #38bdf8; }
 
-        .stats-counter {
-            text-align: center; font-size: 12px; font-weight: 600; color: #38bdf8; margin-bottom: 15px;
-        }
+        .stats-counter { text-align: center; font-size: 12px; font-weight: 600; color: #38bdf8; margin-bottom: 15px; }
 
         .search-box { margin-bottom: 15px; }
         .search-input {
-            width: 100%; padding: 12px 16px;
-            border-radius: 14px; font-family: 'Poppins', sans-serif; font-size: 14px;
-            outline: none; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            width: 100%; padding: 12px 16px; border-radius: 14px;
+            font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; transition: 0.3s;
         }
         .search-input:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
 
-        .filter-buttons {
-            display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;
-        }
+        .filter-buttons { display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
         .filter-btn {
             background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);
             color: #38bdf8; padding: 5px 12px; border-radius: 8px; cursor: pointer;
@@ -160,15 +122,13 @@
         #adminPanel { 
             display: none; padding: 20px; border-radius: 16px; margin-bottom: 25px; 
             border: 1px solid rgba(56, 189, 248, 0.4); 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
         }
         
         .form-title { color: #38bdf8; font-weight: bold; margin-top: 0; margin-bottom: 12px; font-size: 16px; }
         
         input[type="text"], input[type="file"], select, textarea { 
             width: 100%; padding: 12px; margin-bottom: 12px; 
-            border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 13px;
-            outline: none; transition: 0.3s;
+            border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 13px; outline: none; 
         }
         input[type="file"]::file-selector-button {
             background: linear-gradient(135deg, #0284c7, #0369a1);
@@ -177,43 +137,35 @@
         textarea { resize: vertical; height: 80px; }
         
         .add-btn { 
-            width: 100%; padding: 12px; 
-            background: linear-gradient(135deg, #10b981, #059669); 
-            color: white; border: none; border-radius: 12px; 
-            font-weight: bold; font-size: 15px; cursor: pointer; 
-            box-shadow: 0 8px 15px rgba(16, 185, 129, 0.2);
+            width: 100%; padding: 12px; background: linear-gradient(135deg, #10b981, #059669); 
+            color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; 
             transition: 0.3s; 
         }
         .add-btn:hover { opacity: 0.95; transform: translateY(-2px); }
 
         .image-card { 
             padding: 18px; margin-top: 20px; border-radius: 20px; 
-            box-shadow: 0 12px 30px rgba(0,0,0,0.1); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
             border: 1px solid rgba(100, 116, 139, 0.2);
         }
         
-        .card-header-info {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-        }
+        .card-header-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .room-badge {
             background: linear-gradient(135deg, #38bdf8, #2563eb);
-            color: white; padding: 5px 12px; border-radius: 8px;
-            font-weight: 700; font-size: 13px; box-shadow: 0 3px 10px rgba(56, 189, 248, 0.3);
+            color: white; padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 13px;
         }
-        .status-badge {
-            padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold;
-        }
+        .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; }
         .status-completed { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
         .status-progress { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
 
-        /* حاوية السلايدر في الكارت */
+        /* حاوية السلايدر والصورة بأبعاد متناسقة ومريحة للعين */
         .slider-container {
             position: relative; width: 100%; margin-bottom: 12px;
             background: #020617; border-radius: 14px; overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            max-height: 380px; display: flex; align-items: center; justify-content: center;
         }
         .slider-container img { 
-            width: 100%; max-height: 400px; object-fit: contain; 
+            width: 100%; max-height: 380px; object-fit: contain; 
             display: block; cursor: pointer; transition: 0.3s;
         }
         
@@ -234,7 +186,7 @@
             font-size: 11px; border-radius: 6px; font-family: monospace; font-weight: bold;
         }
 
-        /* نافذة تكبير الصورة (Lightbox) مع دعم الأسهم والتقليب الكامل */
+        /* نافذة تكبير الصورة (Lightbox) بملء الشاشة */
         #lightbox {
             display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; padding: 20px;
@@ -263,13 +215,8 @@
             color: #38bdf8; font-family: monospace; font-size: 14px; font-weight: bold; background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 8px;
         }
 
-        .image-card p { 
-            font-size: 15px; margin: 10px 0; line-height: 1.6; font-weight: 600; word-break: break-word;
-        }
-        .date-tag { 
-            font-size: 11px; display: block; margin-bottom: 12px; 
-            font-family: 'Courier New', Courier, monospace;
-        }
+        .image-card p { font-size: 15px; margin: 10px 0; line-height: 1.6; font-weight: 600; word-break: break-word; }
+        .date-tag { font-size: 11px; display: block; margin-bottom: 12px; font-family: 'Courier New', Courier, monospace; }
         
         .card-actions { display: flex; gap: 8px; }
         .card-actions button { 
@@ -287,10 +234,7 @@
         .del-btn { background: rgba(220, 38, 38, 0.2); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.4); }
         .del-btn:hover { background: #dc2626; color: white; }
 
-        .footer { 
-            text-align: center; margin-top: 25px; padding-top: 15px; 
-            border-top: 1px solid rgba(100, 116, 139, 0.2); 
-        }
+        .footer { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(100, 116, 139, 0.2); }
         .footer-text { font-size: 10px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 2px; }
         .creation-date { font-size: 11px; margin-bottom: 10px; font-family: 'Courier New', Courier, monospace; }
         .dev-name {
@@ -308,7 +252,7 @@
 </head>
 <body class="dark">
 
-<!-- نافذة تكبير الصورة (Lightbox) المحدثة لتعمل مع كل الصور -->
+<!-- نافذة التكبير الكبيرة (Lightbox) -->
 <div id="lightbox">
     <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
     <div id="lightbox-content">
@@ -466,7 +410,9 @@
 
         imgElem.setAttribute('data-index', currentIndex);
         imgElem.src = images[currentIndex];
-        imgElem.setAttribute('onclick', `openLightbox('${imagesAttr}', ${currentIndex})`);
+        
+        let clickAttr = `openLightbox('${imagesAttr.replace(/'/g, "\\'")}', ${currentIndex})`;
+        imgElem.setAttribute('onclick', clickAttr);
         
         if(counterElem) {
             counterElem.innerText = `${currentIndex + 1}/${totalImages}`;
@@ -644,14 +590,16 @@
             let currentLikes = item.likes || 0;
             let imgList = item.images || [item.img];
             let uniqueId = item.id || index;
-            let imagesJson = JSON.stringify(imgList);
+            
+            // تهيئة بيانات الصور لتعمل مع نافذة التكبير الكبيرة بسلاسة تامة لأي صورة
+            let imagesJson = JSON.stringify(imgList).replace(/"/g, '&quot;');
 
             let sliderHtml = '';
             if (imgList.length > 1) {
                 sliderHtml = `
                     <div class="slider-container">
                         <button class="slider-btn prev-btn" onclick="changeSlide('${uniqueId}', -1, ${imgList.length})">&#10094;</button>
-                        <img id="slide-img-${uniqueId}" src="${imgList[0]}" data-index="0" data-images='${imagesJson}' alt="TV Service" onclick="openLightbox('${imagesJson}', 0)" title="Click to view full screen">
+                        <img id="slide-img-${uniqueId}" src="${imgList[0]}" data-index="0" data-images='${JSON.stringify(imgList)}' alt="TV Service" onclick="openLightbox('${imagesJson}', 0)" title="Click to view full screen">
                         <button class="slider-btn next-btn" onclick="changeSlide('${uniqueId}', 1, ${imgList.length})">&#10095;</button>
                         <div class="slider-counter" id="slide-counter-${uniqueId}">1/${imgList.length}</div>
                     </div>
@@ -659,7 +607,7 @@
             } else {
                 sliderHtml = `
                     <div class="slider-container">
-                        <img id="slide-img-${uniqueId}" src="${imgList[0]}" data-index="0" data-images='${imagesJson}' alt="TV Service" onclick="openLightbox('${imagesJson}', 0)" title="Click to view full screen">
+                        <img id="slide-img-${uniqueId}" src="${imgList[0]}" data-index="0" data-images='${JSON.stringify(imgList)}' alt="TV Service" onclick="openLightbox('${imagesJson}', 0)" title="Click to view full screen">
                     </div>
                 `;
             }
