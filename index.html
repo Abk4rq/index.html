@@ -206,17 +206,35 @@
         .status-completed { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
         .status-progress { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
 
-        /* حاوية الصور داخل الكارت (تدعم صورة واحدة أو صورتين بنفس المربع) */
-        .images-container {
-            display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;
+        /* حاوية السلايدر (عرض صورة واحدة مع أسهم التنقل) */
+        .slider-container {
+            position: relative; width: 100%; margin-bottom: 12px;
+            background: #020617; border-radius: 14px; overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-        .image-card img { 
-            flex: 1; min-width: 120px; max-height: 350px; object-fit: contain; 
-            border-radius: 14px; display: block; 
-            background: #020617; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            cursor: pointer; transition: 0.3s;
+        .slider-container img { 
+            width: 100%; max-height: 400px; object-fit: contain; 
+            display: block; cursor: pointer; transition: 0.3s;
         }
-        .image-card img:hover { opacity: 0.95; transform: scale(1.01); }
+        
+        /* أسهم التنقل على يمين ويسار الصورة */
+        .slider-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6); color: white; border: none;
+            width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+            font-size: 18px; display: flex; align-items: center; justify-content: center;
+            z-index: 5; transition: 0.3s; user-select: none;
+        }
+        .slider-btn:hover { background: rgba(56, 189, 248, 0.8); }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+
+        /* عداد الصور المصغر (مثل 1/2) داخل الصورة */
+        .slider-counter {
+            position: absolute; bottom: 10px; right: 10px;
+            background: rgba(0,0,0,0.7); color: #38bdf8; padding: 2px 8px;
+            font-size: 11px; border-radius: 6px; font-family: monospace; font-weight: bold;
+        }
 
         /* نافذة تكبير الصورة بملء الشاشة */
         #lightbox {
@@ -334,10 +352,10 @@
             <option value="Completed">✅ Completed (صح أخضر)</option>
             <option value="Pending">❌ Pending (إكس أحمر)</option>
         </select>
-        <!-- إمكانية اختيار صورتين أو أكثر لتظهر داخل نفس الكارت -->
+        <!-- رفع أكثر من صورة لتظهر داخل السلايدر -->
         <input type="file" id="imgInput" accept="image/*" multiple>
         <textarea id="descInput" placeholder="Enter image description or service details..."></textarea>
-        <button class="add-btn" onclick="saveData()">Publish Image Instantly 🚀</button>
+        <button class="add-btn" onclick="saveData()">Publish Images Instantly 🚀</button>
     </div>
 
     <div id="gallery"></div>
@@ -371,6 +389,28 @@
 
     function closeLightbox() {
         document.getElementById('lightbox').style.display = 'none';
+    }
+
+    // دالة تحريك الصور داخل الكارت (السلايدر)
+    function changeSlide(cardId, direction, totalImages) {
+        let imgElem = document.getElementById(`slide-img-${cardId}`);
+        let counterElem = document.getElementById(`slide-counter-${cardId}`);
+        let imagesAttr = imgElem.getAttribute('data-images');
+        let images = JSON.parse(imagesAttr);
+        let currentIndex = parseInt(imgElem.getAttribute('data-index'));
+
+        currentIndex += direction;
+        if (currentIndex < 0) {
+            currentIndex = totalImages - 1;
+        } else if (currentIndex >= totalImages) {
+            currentIndex = 0;
+        }
+
+        imgElem.setAttribute('data-index', currentIndex);
+        imgElem.src = images[currentIndex];
+        if(counterElem) {
+            counterElem.innerText = `${currentIndex + 1}/${totalImages}`;
+        }
     }
 
     async function fetchWeather() {
@@ -431,7 +471,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // دمج الصور المرفوعة في كارت واحد داخل قاعدة البيانات
     function saveData() {
         const roomInput = document.getElementById('roomInput');
         const categoryInput = document.getElementById('categoryInput');
@@ -445,7 +484,7 @@
         }
 
         const files = fileInput.files;
-        alert(`Compressing and publishing ${files.length} image(s) into one card...`);
+        alert(`Compressing and publishing ${files.length} image(s)...`);
 
         let compressedImages = [];
         let processedCount = 0;
@@ -479,7 +518,6 @@
                     processedCount++;
 
                     if (processedCount === files.length) {
-                        // حفظ الصور معاً في نفس الدوكيومنت (نفس الكارت)
                         const date = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
                         db.collection("tvgallery").add({
@@ -487,7 +525,7 @@
                             category: categoryInput.value,
                             status: statusInput.value,
                             likes: 0,
-                            images: compressedImages, // مصفوفة الصور داخل نفس الحقل
+                            images: compressedImages,
                             desc: descInput.value || "",
                             date: date,
                             timestamp: Date.now()
@@ -496,10 +534,10 @@
                             roomInput.value = '';
                             fileInput.value = '';
                             descInput.value = '';
-                            alert("Card published successfully with all images!");
+                            alert("Published successfully!");
                         })
                         .catch(error => {
-                            alert("Error publishing: " + error.message);
+                            alert("Error: " + error.message);
                         });
                     }
                 };
@@ -513,7 +551,6 @@
             allItems = [];
             snapshot.forEach(doc => {
                 let data = doc.data();
-                // توافق تام مع الصور القديمة (التي تحتوي على img مفردة) والصور الجديدة (التي تحتوي على images مجمعة)
                 if (!data.images && data.img) {
                     data.images = [data.img];
                 }
@@ -540,18 +577,31 @@
             return;
         }
 
-        items.forEach(item => {
+        items.forEach((item, index) => {
             let isCompleted = item.status === 'Completed';
             let statusClass = isCompleted ? 'status-completed' : 'status-progress';
             let statusText = isCompleted ? '✅ Completed' : '❌ Pending';
             let currentLikes = item.likes || 0;
             let imgList = item.images || [item.img];
+            let uniqueId = item.id || index;
 
-            // توليد كود لعرض الصور داخل نفس المربع (سواء صورة واحدة أو صورتين أو أكثر بجانب بعضها)
-            let imgsHtml = '';
-            imgList.forEach(url => {
-                imgsHtml += `<img src="${url}" alt="TV Service Image" onclick="openLightbox('${url}')" title="Click to view full screen">`;
-            });
+            let sliderHtml = '';
+            if (imgList.length > 1) {
+                sliderHtml = `
+                    <div class="slider-container">
+                        <button class="slider-btn prev-btn" onclick="changeSlide('${uniqueId}', -1, ${imgList.length})">&#10094;</button>
+                        <img id="slide-img-${uniqueId}" src="${imgList[0]}" data-index="0" data-images='${JSON.stringify(imgList)}' alt="TV Service" onclick="openLightbox(this.src)" title="Click to view full screen">
+                        <button class="slider-btn next-btn" onclick="changeSlide('${uniqueId}', 1, ${imgList.length})">&#10095;</button>
+                        <div class="slider-counter" id="slide-counter-${uniqueId}">1/${imgList.length}</div>
+                    </div>
+                `;
+            } else {
+                sliderHtml = `
+                    <div class="slider-container">
+                        <img id="slide-img-${uniqueId}" src="${imgList[0]}" data-index="0" data-images='${JSON.stringify(imgList)}' alt="TV Service" onclick="openLightbox(this.src)" title="Click to view full screen">
+                    </div>
+                `;
+            }
 
             let adminControls = isAdmin ? `
                 <div class="admin-controls">
@@ -566,9 +616,7 @@
                         <div class="room-badge">🏠 Room: ${item.room || 'General'}</div>
                         <div class="status-badge ${statusClass}">${statusText}</div>
                     </div>
-                    <div class="images-container">
-                        ${imgsHtml}
-                    </div>
+                    ${sliderHtml}
                     <p>${item.desc}</p>
                     <span class="date-tag">${item.date || ''}</span>
                     <div class="card-actions">
