@@ -11,7 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     
     <style>
-        * { box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+        * { box-sizing: border-box; }
 
         body.dark { 
             background: #030712;
@@ -38,9 +38,9 @@
             font-family: 'Poppins', sans-serif; 
             margin: 0; padding: 10px; direction: ltr;
             user-select: none; -webkit-user-select: none;
+            transition: background 0.3s, color 0.3s;
         }
 
-        /* تم توسيع الموقع ليأخذ راحته بالكامل بدون مساحات سوداء جانبية مزعجة */
         .container { 
             max-width: 1100px; width: 100%; margin: 0 auto; 
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -82,6 +82,7 @@
             background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3);
             color: #38bdf8; padding: 5px 10px; border-radius: 8px; cursor: pointer;
             font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 5px;
+            transition: 0.3s;
         }
         .theme-toggle-btn:hover { background: #38bdf8; color: #fff; }
 
@@ -106,15 +107,26 @@
         .search-box { margin-bottom: 15px; }
         .search-input {
             width: 100%; padding: 12px 16px; border-radius: 14px;
-            font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; transition: 0.3s;
+            font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
         }
         .search-input:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+
+        /* تبويبات فصل الحالة (مكتمل / غير مكتمل / الكل) */
+        .status-tabs { display: flex; gap: 8px; margin-bottom: 12px; justify-content: center; }
+        .status-tab-btn {
+            background: rgba(100, 116, 139, 0.15); border: 1px solid rgba(100, 116, 139, 0.3);
+            color: #94a3b8; padding: 8px 16px; border-radius: 10px; cursor: pointer;
+            font-size: 12px; font-weight: 700; transition: 0.2s;
+        }
+        .status-tab-btn.active { background: #38bdf8; color: #fff; border-color: #38bdf8; }
+        .status-tab-btn.active-completed { background: #10b981; color: #fff; border-color: #10b981; }
+        .status-tab-btn.active-pending { background: #ef4444; color: #fff; border-color: #ef4444; }
 
         .filter-buttons { display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; justify-content: center; flex-wrap: wrap; }
         .filter-btn {
             background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);
             color: #38bdf8; padding: 5px 12px; border-radius: 8px; cursor: pointer;
-            font-size: 11px; font-weight: 600; white-space: nowrap;
+            font-size: 11px; font-weight: 600; white-space: nowrap; transition: 0.2s;
         }
         .filter-btn.active, .filter-btn:hover { background: #38bdf8; color: #fff; }
 
@@ -138,11 +150,10 @@
         .add-btn { 
             width: 100%; padding: 12px; background: linear-gradient(135deg, #10b981, #059669); 
             color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; 
-            transition: 0.3s; 
+            transition: 0.2s; 
         }
         .add-btn:hover { opacity: 0.95; transform: translateY(-2px); }
 
-        /* شبكة عرض الكروت لتملأ الشاشة بانتظام */
         #gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -172,7 +183,7 @@
         }
         .slider-container img { 
             width: 100%; height: 100%; object-fit: contain; 
-            display: block; cursor: pointer; transition: 0.3s;
+            display: block; cursor: pointer;
         }
         
         .slider-btn {
@@ -180,7 +191,7 @@
             background: rgba(0, 0, 0, 0.6); color: white; border: none;
             width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
             font-size: 18px; display: flex; align-items: center; justify-content: center;
-            z-index: 5; transition: 0.3s; user-select: none;
+            z-index: 5; transition: 0.2s; user-select: none;
         }
         .slider-btn:hover { background: rgba(56, 189, 248, 0.8); }
         .prev-btn { left: 10px; }
@@ -192,7 +203,6 @@
             font-size: 11px; border-radius: 6px; font-family: monospace; font-weight: bold;
         }
 
-        /* نافذة تكبير الصورة (Lightbox) لتملأ الشاشة بالكامل وبوضوح تام للاستمارات والطلبات */
         #lightbox {
             display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; padding: 10px;
@@ -213,7 +223,7 @@
             background: rgba(0, 0, 0, 0.7); color: white; border: 2px solid rgba(255,255,255,0.3);
             width: 55px; height: 55px; border-radius: 50%; cursor: pointer;
             font-size: 26px; display: flex; align-items: center; justify-content: center;
-            z-index: 10; transition: 0.3s; user-select: none;
+            z-index: 10; transition: 0.2s; user-select: none;
         }
         .lightbox-btn:hover { background: #38bdf8; border-color: #38bdf8; }
         .lightbox-prev { left: 20px; }
@@ -229,7 +239,7 @@
         .card-actions { display: flex; gap: 8px; }
         .card-actions button { 
             flex: 1; padding: 9px; border: none; border-radius: 10px; 
-            font-weight: bold; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.3s; font-size: 12px;
+            font-weight: bold; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; font-size: 12px;
         }
         .share-btn { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
         .share-btn:hover { background: #38bdf8; color: #fff; }
@@ -255,7 +265,6 @@
 </head>
 <body class="dark">
 
-<!-- نافذة تكبير الصورة (Lightbox) بملء الشاشة بالكامل وبوضوح فائق -->
 <div id="lightbox">
     <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
     <div id="lightbox-content">
@@ -266,7 +275,6 @@
     </div>
 </div>
 
-<!-- أزرار التواصل العائمة -->
 <div class="floating-container">
     <a href="https://wa.me/9647818025533" target="_blank" class="floating-icon-btn floating-whatsapp" title="WhatsApp">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448c-.352-.19-.71-.383-1.077-.577l-5.318 1.391zm22.585-20.354c-2.422-2.423-5.642-3.757-9.066-3.758-7.054 0-12.793 5.739-12.795 12.796-.001 2.253.589 4.453 1.708 6.388l-1.808 6.602 6.772-1.776c1.854 1.011 3.968 1.545 6.126 1.546 7.054 0 12.793-5.739 12.795-12.796.002-3.424-1.332-6.645-3.754-9.068zm-9.066 19.349c-1.815 0-3.593-.488-5.145-1.411l-.369-.221-3.83 1.004 1.023-3.733-.24-.381c-1.013-1.611-1.548-3.488-1.547-5.405.002-5.626 4.581-10.205 10.209-10.205 2.727.001 5.288 1.063 7.218 2.993 1.93 1.93 2.991 4.492 2.99 7.219-.002 5.626-4.582 10.205-10.209 10.205zm5.597-7.593c-.305-.153-1.805-.891-2.085-.994-.28-.103-.483-.153-.686.153-.203.305-.788.994-.966 1.198-.178.204-.356.229-.661.076-.305-.153-1.285-.473-2.449-1.512-.905-.806-1.517-1.802-1.696-2.107-.178-.305-.019-.47.133-.623.137-.137.305-.356.458-.534.153-.178.203-.305.305-.51.102-.204.051-.382-.025-.534-.076-.153-.686-1.652-.94-2.261-.248-.598-.501-.517-.686-.527l-.585-.01c-.203 0-.533.076-.813.382-.28.305-1.068 1.044-1.068 2.547 0 1.503 1.095 2.952 1.248 3.156.153.203 2.155 3.291 5.226 4.613.73.315 1.299.503 1.742.645.733.234 1.4.201 1.928.122.591-.088 1.805-.738 2.061-1.451.255-.713.255-1.323.179-1.451-.076-.128-.28-.204-.585-.357z"/></svg>
@@ -295,12 +303,19 @@
 
     <div class="stats-counter" id="statsCounter">📊 Total Works: Loading...</div>
 
+    <!-- أزرار تبديل عرض الحالة (المكتملة مقابل غير المنجزة) -->
+    <div class="status-tabs">
+        <button class="status-tab-btn active" id="tab-all" onclick="setStatusFilter('All', this)">All Works</button>
+        <button class="status-tab-btn" id="tab-completed" onclick="setStatusFilter('Completed', this)">✅ Completed (2)</button>
+        <button class="status-tab-btn" id="tab-pending" onclick="setStatusFilter('Pending', this)">❌ Pending (30+)</button>
+    </div>
+
     <div class="search-box">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search by Room Number..." oninput="filterGallery()">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search by Room Number..." oninput="debouncedFilter()">
     </div>
 
     <div class="filter-buttons">
-        <button class="filter-btn active" onclick="setCategory('All', this)">All</button>
+        <button class="filter-btn active" onclick="setCategory('All', this)">All Categories</button>
         <button class="filter-btn" onclick="setCategory('TV', this)">TV</button>
         <button class="filter-btn" onclick="setCategory('LNB', this)">LNB</button>
         <button class="filter-btn" onclick="setCategory('Satellite', this)">Satellite</button>
@@ -342,7 +357,9 @@
     let isAdmin = false;
     let allItems = [];
     let currentCategory = 'All';
+    let currentStatusFilter = 'All'; // جديد لفلترة الحالة
     let secretClicks = 0;
+    let searchTimeout = null;
 
     let currentLightboxImages = [];
     let currentLightboxIndex = 0;
@@ -558,14 +575,20 @@
     function loadGallery() {
         db.collection("tvgallery").orderBy("timestamp", "desc").onSnapshot(snapshot => {
             allItems = [];
+            let completedCount = 0;
+            let pendingCount = 0;
             snapshot.forEach(doc => {
                 let data = doc.data();
                 if (!data.images && data.img) {
                     data.images = [data.img];
                 }
                 allItems.push({ id: doc.id, ...data });
+                if (data.status === 'Completed') completedCount++;
+                else pendingCount++;
             });
-            document.getElementById('statsCounter').innerText = `📊 Total Works Published: ${allItems.length}`;
+            document.getElementById('statsCounter').innerText = `📊 Total: ${allItems.length} | Completed: ${completedCount} | Pending: ${pendingCount}`;
+            document.getElementById('tab-completed').innerText = `✅ Completed (${completedCount})`;
+            document.getElementById('tab-pending').innerText = `❌ Pending (${pendingCount})`;
             filterGallery();
         });
     }
@@ -577,15 +600,29 @@
         filterGallery();
     }
 
+    function setStatusFilter(status, btn) {
+        currentStatusFilter = status;
+        document.querySelectorAll('.status-tab-btn').forEach(b => {
+            b.classList.remove('active', 'active-completed', 'active-pending');
+        });
+        if (status === 'Completed') {
+            btn.classList.add('active-completed');
+        } else if (status === 'Pending') {
+            btn.classList.add('active-pending');
+        } else {
+            btn.classList.add('active');
+        }
+        filterGallery();
+    }
+
     function renderGallery(items) {
         const gallery = document.getElementById('gallery');
-        gallery.innerHTML = '';
-
         if (items.length === 0) {
-            gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px; grid-column: 1/-1;">No works found.</p>';
+            gallery.innerHTML = '<p style="text-align:center; color:#64748b; padding: 20px; grid-column: 1/-1;">No works found in this section.</p>';
             return;
         }
 
+        let htmlContent = '';
         items.forEach((item, index) => {
             let isCompleted = item.status === 'Completed';
             let statusClass = isCompleted ? 'status-completed' : 'status-progress';
@@ -621,7 +658,7 @@
                 </div>
             ` : '';
 
-            gallery.innerHTML += `
+            htmlContent += `
                 <div class="image-card">
                     <div>
                         <div class="card-header-info">
@@ -642,6 +679,7 @@
                 </div>
             `;
         });
+        gallery.innerHTML = htmlContent;
     }
 
     function likeItem(docId, currentLikes) {
@@ -652,12 +690,20 @@
         });
     }
 
+    function debouncedFilter() {
+        if (searchTimeout) clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            filterGallery();
+        }, 150);
+    }
+
     function filterGallery() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
         const filtered = allItems.filter(item => {
             const matchesCategory = (currentCategory === 'All' || item.category === currentCategory);
+            const matchesStatus = (currentStatusFilter === 'All' || item.status === currentStatusFilter);
             const matchesSearch = (item.room || "").toLowerCase().includes(query) || (item.desc || "").toLowerCase().includes(query);
-            return matchesCategory && matchesSearch;
+            return matchesCategory && matchesStatus && matchesSearch;
         });
         renderGallery(filtered);
     }
