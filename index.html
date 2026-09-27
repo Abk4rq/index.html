@@ -111,7 +111,6 @@
         }
         .search-input:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
 
-        /* تبويبات فصل الحالة (مكتمل / غير مكتمل / الكل) */
         .status-tabs { display: flex; gap: 8px; margin-bottom: 12px; justify-content: center; }
         .status-tab-btn {
             background: rgba(100, 116, 139, 0.15); border: 1px solid rgba(100, 116, 139, 0.3);
@@ -303,11 +302,10 @@
 
     <div class="stats-counter" id="statsCounter">📊 Total Works: Loading...</div>
 
-    <!-- أزرار تبديل عرض الحالة (المكتملة مقابل غير المنجزة) -->
     <div class="status-tabs">
         <button class="status-tab-btn active" id="tab-all" onclick="setStatusFilter('All', this)">All Works</button>
-        <button class="status-tab-btn" id="tab-completed" onclick="setStatusFilter('Completed', this)">✅ Completed (2)</button>
-        <button class="status-tab-btn" id="tab-pending" onclick="setStatusFilter('Pending', this)">❌ Pending (30+)</button>
+        <button class="status-tab-btn" id="tab-completed" onclick="setStatusFilter('Completed', this)">✅ Completed (0)</button>
+        <button class="status-tab-btn" id="tab-pending" onclick="setStatusFilter('Pending', this)">❌ Pending (0)</button>
     </div>
 
     <div class="search-box">
@@ -357,7 +355,7 @@
     let isAdmin = false;
     let allItems = [];
     let currentCategory = 'All';
-    let currentStatusFilter = 'All'; // جديد لفلترة الحالة
+    let currentStatusFilter = 'All';
     let secretClicks = 0;
     let searchTimeout = null;
 
@@ -583,8 +581,13 @@
                     data.images = [data.img];
                 }
                 allItems.push({ id: doc.id, ...data });
-                if (data.status === 'Completed') completedCount++;
-                else pendingCount++;
+                
+                // التأكد من تصنيف وحساب الطلبات المكتملة بدقة
+                if (data.status === 'Completed') {
+                    completedCount++;
+                } else {
+                    pendingCount++;
+                }
             });
             document.getElementById('statsCounter').innerText = `📊 Total: ${allItems.length} | Completed: ${completedCount} | Pending: ${pendingCount}`;
             document.getElementById('tab-completed').innerText = `✅ Completed (${completedCount})`;
