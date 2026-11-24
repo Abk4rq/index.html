@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TV SERVICE - Official Elite Gallery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Outfit:wght@300;500;700&family=Syne:wght@700;800&family=Cairo:wght@600;700;800&display=swap" rel="stylesheet">
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -266,9 +266,562 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             letter-spacing: 1px; display: inline-block;
         }
+
+        /* =========================================================
+           المقدمة السينمائية Full HD (تظهر 5 ثواني مع صوت من الصحن ثم تنتقل للصفحة الثانية)
+           ========================================================= */
+        #tv-cinema-intro {
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            background: #02040a;
+            font-family: 'Outfit', sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.65s ease;
+        }
+
+        #tv-cinema-intro.intro-exit {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #cinema-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .cinema-lights {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 65% 45% at 50% 42%, rgba(56, 189, 248, 0.16), transparent 70%),
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.14), transparent 45%),
+                radial-gradient(circle at 82% 22%, rgba(251, 191, 36, 0.10), transparent 42%);
+        }
+
+        .anamorphic-flare {
+            position: fixed;
+            top: 44%;
+            left: -30%;
+            width: 160%;
+            height: 3px;
+            z-index: 15;
+            pointer-events: none;
+            opacity: 0;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(56, 189, 248, 0.15) 20%,
+                rgba(255, 255, 255, 0.95) 50%,
+                rgba(251, 191, 36, 0.45) 75%,
+                transparent 100%
+            );
+            box-shadow:
+                0 0 18px rgba(56, 189, 248, 0.9),
+                0 0 45px rgba(56, 189, 248, 0.5);
+            filter: blur(0.6px);
+            animation: flareSweep 1.35s cubic-bezier(0.16, 1, 0.3, 1) 0.55s forwards;
+        }
+
+        .shockwave-ring {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0.3);
+            border: 2px solid rgba(56, 189, 248, 0.85);
+            box-shadow:
+                0 0 25px rgba(56, 189, 248, 0.6),
+                inset 0 0 20px rgba(251, 191, 36, 0.35);
+            opacity: 0;
+            z-index: 6;
+            pointer-events: none;
+            animation: shockwaveExpand 1.3s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards;
+        }
+
+        .intro-stage {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            perspective: 1400px;
+        }
+
+        .scene-tilt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            transition: transform 0.16s ease-out;
+            width: 100%;
+            max-width: 960px;
+        }
+
+        .dish-wrap {
+            position: relative;
+            width: clamp(225px, 36vw, 315px);
+            height: clamp(225px, 36vw, 315px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: clamp(16px, 3vh, 30px);
+        }
+
+        .radar-ring {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .radar-outer {
+            width: 100%;
+            height: 100%;
+            border: 1px dashed rgba(56, 189, 248, 0.38);
+            animation: fadeScale 0.9s ease-out 0.25s forwards, spinCW 30s linear infinite;
+        }
+
+        .radar-mid {
+            width: 82%;
+            height: 82%;
+            border: 1.5px solid transparent;
+            border-top-color: rgba(251, 191, 36, 0.85);
+            border-right-color: rgba(56, 189, 248, 0.75);
+            box-shadow: 0 0 24px rgba(56, 189, 248, 0.16);
+            animation: fadeScale 0.9s ease-out 0.4s forwards, spinCCW 15s linear infinite;
+        }
+
+        .radar-core {
+            width: 64%;
+            height: 64%;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 72%);
+            animation: fadeScale 0.9s ease-out 0.55s forwards;
+        }
+
+        .dish-motion {
+            position: relative;
+            width: 72%;
+            height: 72%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            animation:
+                dishStrikeIn 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards,
+                dishFloat 4.4s ease-in-out 1.1s infinite;
+        }
+
+        .dish-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            filter:
+                drop-shadow(0 20px 38px rgba(0, 0, 0, 0.9))
+                drop-shadow(0 0 26px rgba(56, 189, 248, 0.42));
+        }
+
+        .signal-wave {
+            fill: none;
+            stroke-linecap: round;
+            opacity: 0;
+        }
+
+        .w1 {
+            stroke: #38bdf8;
+            stroke-width: 3.2;
+            animation: waveEmit 2.1s cubic-bezier(0.16, 1, 0.3, 1) 0.75s infinite;
+        }
+        .w2 {
+            stroke: #fbbf24;
+            stroke-width: 2.6;
+            animation: waveEmit 2.1s cubic-bezier(0.16, 1, 0.3, 1) 1.1s infinite;
+        }
+        .w3 {
+            stroke: #818cf8;
+            stroke-width: 2.2;
+            animation: waveEmit 2.1s cubic-bezier(0.16, 1, 0.3, 1) 1.45s infinite;
+        }
+
+        .title-area {
+            text-align: center;
+            position: relative;
+            z-index: 12;
+            width: 100%;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            backdrop-filter: blur(12px);
+            font-size: clamp(0.68rem, 1.8vw, 0.8rem);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #e0f2fe;
+            margin-bottom: 14px;
+            opacity: 0;
+            transform: translateY(14px);
+            animation: riseIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.65s forwards;
+        }
+
+        .pulse-led {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #38bdf8;
+            box-shadow: 0 0 10px #38bdf8, 0 0 22px #38bdf8;
+            animation: ledPulse 1.4s infinite;
+        }
+
+        .hero-title-wrap {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            padding: 4px 10px;
+            opacity: 0;
+            transform: translateY(28px) scale(0.95);
+            animation: titleSnap 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.75s forwards;
+        }
+
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.35rem, 7.6vw, 5.8rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+            background: linear-gradient(
+                115deg,
+                #ffffff 0%,
+                #e0f2fe 25%,
+                #38bdf8 50%,
+                #fde68a 75%,
+                #ffffff 100%
+            );
+            background-size: 240% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 5s linear infinite;
+            filter: drop-shadow(0 12px 30px rgba(56, 189, 248, 0.3));
+        }
+
+        .scan-beam {
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 38%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.65),
+                rgba(56, 189, 248, 0.35),
+                transparent
+            );
+            transform: skewX(-24deg);
+            pointer-events: none;
+            animation: lightScan 2.8s ease-in-out 1.1s infinite;
+        }
+
+        .light-bar {
+            width: 0;
+            max-width: 360px;
+            height: 2px;
+            margin: 16px auto;
+            background: linear-gradient(90deg, transparent, #38bdf8, #fbbf24, #38bdf8, transparent);
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.65);
+            animation: barGrow 1s cubic-bezier(0.22, 1, 0.36, 1) 1s forwards;
+        }
+
+        .sub-caption {
+            font-size: clamp(0.84rem, 2.2vw, 1.08rem);
+            font-weight: 300;
+            letter-spacing: clamp(3px, 1vw, 7px);
+            text-transform: uppercase;
+            color: rgba(226, 232, 240, 0.75);
+            opacity: 0;
+            transform: translateY(14px);
+            animation: riseIn 0.85s ease 1.15s forwards;
+        }
+
+        /* اسم الشركة بالأسفل (إنجليزي وفوقه/تحته عربي) */
+        .company-bottom {
+            margin-top: clamp(22px, 3.5vh, 34px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            transform: translateY(18px);
+            animation: riseIn 0.85s ease 1.25s forwards;
+        }
+
+        .company-en {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(0.9rem, 2.4vw, 1.25rem);
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #fbbf24;
+            text-shadow: 0 0 18px rgba(251, 191, 36, 0.35);
+        }
+
+        .company-ar {
+            font-family: 'Cairo', sans-serif;
+            font-size: clamp(1.05rem, 2.8vw, 1.45rem);
+            font-weight: 800;
+            color: #f8fafc;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+        }
+
+        @keyframes flareSweep {
+            0% {
+                opacity: 0;
+                left: -65%;
+                transform: scaleY(0.4);
+            }
+            35% {
+                opacity: 1;
+                transform: scaleY(1.4);
+            }
+            100% {
+                opacity: 0;
+                left: 35%;
+                transform: scaleY(0.6);
+            }
+        }
+
+        @keyframes shockwaveExpand {
+            0% {
+                opacity: 0.9;
+                transform: translate(-50%, -50%) scale(0.25);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(5.2);
+            }
+        }
+
+        @keyframes dishStrikeIn {
+            0% {
+                opacity: 0;
+                transform: translate(-210px, 130px) scale(0.18) rotate(-42deg);
+                filter: blur(10px);
+            }
+            68% {
+                opacity: 1;
+                transform: translate(8px, -8px) scale(1.05) rotate(3deg);
+                filter: blur(0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes dishFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-9px) rotate(-2deg); }
+        }
+
+        @keyframes fadeScale {
+            from { opacity: 0; transform: scale(0.65); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes spinCW {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spinCCW {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        @keyframes waveEmit {
+            0% { opacity: 0; transform: scale(0.8); }
+            35% { opacity: 1; }
+            100% { opacity: 0; transform: scale(1.24); }
+        }
+
+        @keyframes titleSnap {
+            0% {
+                opacity: 0;
+                transform: translateY(28px) scale(0.95);
+                filter: blur(8px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes lightScan {
+            0% { left: -60%; opacity: 0; }
+            20% { opacity: 1; }
+            50% { left: 120%; opacity: 0; }
+            100% { left: 120%; opacity: 0; }
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% center; }
+            100% { background-position: 240% center; }
+        }
+
+        @keyframes barGrow {
+            from { width: 0; opacity: 0; }
+            to { width: 78%; opacity: 1; }
+        }
+
+        @keyframes riseIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes ledPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(0.75); }
+        }
     </style>
 </head>
 <body class="dark">
+
+<!-- المقدمة السينمائية (تعمل لمدة 5 ثواني مع صوت من الصحن ثم تنتقل للصفحة الثانية) -->
+<div id="tv-cinema-intro">
+    <canvas id="cinema-canvas"></canvas>
+    <div class="cinema-lights"></div>
+    <div class="anamorphic-flare"></div>
+    <div class="shockwave-ring"></div>
+
+    <main class="intro-stage">
+        <div class="scene-tilt" id="scene-tilt">
+
+            <div class="dish-wrap">
+                <div class="radar-ring radar-outer"></div>
+                <div class="radar-ring radar-mid"></div>
+                <div class="radar-ring radar-core"></div>
+
+                <div class="dish-motion">
+                    <svg class="dish-svg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="hdMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ffffff" />
+                                <stop offset="35%" stop-color="#cbd5e1" />
+                                <stop offset="75%" stop-color="#64748b" />
+                                <stop offset="100%" stop-color="#1e293b" />
+                            </linearGradient>
+
+                            <radialGradient id="hdBowl" cx="35%" cy="35%" r="75%">
+                                <stop offset="0%" stop-color="#1e293b" />
+                                <stop offset="65%" stop-color="#0f172a" />
+                                <stop offset="100%" stop-color="#020617" />
+                            </radialGradient>
+
+                            <linearGradient id="hdGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#fef08a" />
+                                <stop offset="50%" stop-color="#f59e0b" />
+                                <stop offset="100%" stop-color="#b45309" />
+                            </linearGradient>
+
+                            <linearGradient id="hdBeam" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="rgba(56, 189, 248, 0.52)" />
+                                <stop offset="100%" stop-color="rgba(56, 189, 248, 0)" />
+                            </linearGradient>
+                        </defs>
+
+                        <polygon points="158,52 216,4 222,76" fill="url(#hdBeam)" opacity="0.65" />
+
+                        <!-- قاعدة الصحن -->
+                        <path d="M 56 188 L 106 188 L 92 148 L 70 148 Z" fill="#1e293b" stroke="#475569" stroke-width="1.5" />
+                        <rect x="44" y="188" width="74" height="8" rx="4" fill="url(#hdMetal)" />
+                        <rect x="64" y="184" width="34" height="4" rx="2" fill="url(#hdGold)" />
+
+                        <!-- مفصل -->
+                        <circle cx="81" cy="144" r="10" fill="#334155" stroke="#94a3b8" stroke-width="2" />
+                        <circle cx="81" cy="144" r="4" fill="#fbbf24" />
+
+                        <!-- هيكل الصحن -->
+                        <path d="M 42 56 C 18 102, 48 162, 105 168 C 124 170, 140 163, 152 151 L 56 44 C 49 47, 45 51, 42 56 Z"
+                              fill="url(#hdMetal)" />
+
+                        <!-- الوجه الداخلي -->
+                        <ellipse cx="104" cy="98" rx="22" ry="74" transform="rotate(-43 104 98)"
+                                 fill="url(#hdBowl)" stroke="url(#hdGold)" stroke-width="3.2" />
+
+                        <ellipse cx="104" cy="98" rx="14" ry="50" transform="rotate(-43 104 98)"
+                                 fill="none" stroke="rgba(56, 189, 248, 0.28)" stroke-width="1" stroke-dasharray="4 4" />
+                        <ellipse cx="104" cy="98" rx="7" ry="26" transform="rotate(-43 104 98)"
+                                 fill="none" stroke="rgba(251, 191, 36, 0.38)" stroke-width="1" />
+
+                        <!-- دعامات اللاقط -->
+                        <line x1="96" y1="106" x2="154" y2="55" stroke="#cbd5e1" stroke-width="4.5" stroke-linecap="round" />
+                        <line x1="65" y1="68" x2="152" y2="54" stroke="rgba(148, 163, 184, 0.65)" stroke-width="2" stroke-linecap="round" />
+                        <line x1="132" y1="138" x2="155" y2="57" stroke="rgba(148, 163, 184, 0.65)" stroke-width="2" stroke-linecap="round" />
+
+                        <!-- رأس اللاقط LNB -->
+                        <g transform="translate(156, 53) rotate(-43)">
+                            <rect x="-8" y="-7" width="18" height="14" rx="4" fill="#0f172a" stroke="url(#hdGold)" stroke-width="2" />
+                            <circle cx="10" cy="0" r="5" fill="#38bdf8" />
+                            <circle cx="10" cy="0" r="2.2" fill="#ffffff" />
+                        </g>
+
+                        <!-- موجات الإشارة -->
+                        <path class="signal-wave w1" d="M 168 36 A 22 22 0 0 1 182 54" />
+                        <path class="signal-wave w2" d="M 176 25 A 36 36 0 0 1 196 54" />
+                        <path class="signal-wave w3" d="M 184 14 A 50 50 0 0 1 210 54" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="title-area">
+                <div class="status-pill">
+                    <span class="pulse-led"></span>
+                    <span>SATELLITE UPLINK ACTIVE</span>
+                </div>
+
+                <div class="hero-title-wrap">
+                    <h1 class="hero-title">Hello TV server</h1>
+                    <div class="scan-beam"></div>
+                </div>
+
+                <div class="light-bar"></div>
+                <p class="sub-caption">Satellite Signal Locked</p>
+
+                <div class="company-bottom">
+                    <div class="company-en">BADOR AL-IRAQ COMPANY</div>
+                    <div class="company-ar">شركة بدور العراق</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
 
 <div id="lightbox">
     <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
@@ -282,7 +835,7 @@
 
 <div class="floating-container">
     <a href="https://wa.me/9647818025533" target="_blank" class="floating-icon-btn floating-whatsapp" title="WhatsApp">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448c-.352-.19-.71-.383-1.077-.577l-5.318 1.391zm22.585-20.354c-2.422-2.423-5.642-3.757-9.066-3.758-7.054 0-12.793 5.739-12.795 12.796-.001 2.253.589 4.453 1.708 6.388l-1.808 6.602 6.772-1.776c1.854 1.011 3.968 1.545 6.126 1.546 7.054 0 12.793-5.739 12.795-12.796.002-3.424-1.332-6.645-3.754-9.068zm-9.066 19.349c-1.815 0-3.593-.488-5.145-1.411l-.369-.221-3.83 1.004 1.023-3.733-.24-.381c-1.013-1.611-1.548-3.488-1.547-5.405.002-5.626 4.581-10.205 10.209-10.205 2.727.001 5.288 1.063 7.218 2.993 1.93 1.93 2.991 4.492 2.99 7.219-.002 5.626-4.582 10.205-10.209 10.205zm5.597-7.593c-.305-.153-1.805-.891-2.085-.994-.28-.103-.483-.153-.686.153-.203.305-.788.994-.966 1.198-.178.204-.356.229-.661.076-.305-.153-1.285-.473-2.449-1.512-.905-.806-1.517-1.802-1.696-2.107-.178-.305-.019-.47.133-.623.137-.137.305-.356.458-.534.153-.178.203-.305.305-.51.102-.204.051-.382-.025-.534-.076-.153-.686-1.652-.94-2.261-.248-.598-.501-.517-.686-.527l-.585-.01c-.203 0-.533.076-.813.382-.28.305-1.068 1.044-1.068 2.547 0 1.503 1.095 2.952 1.248 3.156.153.203 2.155 3.291 5.226 4.613.73.315 1.299.503 1.742.645.733.234 1.4.201 1.928.122.591-.088 1.805-.738 2.061-1.451.255-.713.255-1.323.179-1.451-.076-.128-.28-.204-.585-.357z"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448c-.352-.19-.71-.383-1.077-.577l-5.318 1.391zm22.585-20.354c-2.422-2.423-5.642-3.757-9.066-3.758-7.054 0-12.793 5.739-12.795 12.796-.001 2.253.589 4.453 1.708 6.388l-1.808 6.602 6.772-1.776c1.854 1.011 3.968 1.545 6.126 1.546 7.054 0 12.793-5.739 12.795-12.796.002-3.424-1.332-6.645-3.754-9.068zm-9.066 19.349c-1.815 0-3.593-.488-5.145-1.411l-.369-.221-3.83 1.004 1.023-3.733-.24-.381c-1.013-1.611-1.548-3.488-1.547-5.405.002-5.626 4.581-10.205 10.209-10.205 2.727.001 5.288 1.063 7.218 2.993 1.93 2.991 4.492 2.99 7.219-.002 5.626-4.582 10.205-10.209 10.205zm5.597-7.593c-.305-.153-1.805-.891-2.085-.994-.28-.103-.483-.153-.686.153-.203.305-.788.994-.966 1.198-.178.204-.356.229-.661.076-.305-.153-1.285-.473-2.449-1.512-.905-.806-1.517-1.802-1.696-2.107-.178-.305-.019-.47.133-.623.137-.137.305-.356.458-.534.153-.178.203-.305.305-.51.102-.204.051-.382-.025-.534-.076-.153-.686-1.652-.94-2.261-.248-.598-.501-.517-.686-.527l-.585-.01c-.203 0-.533.076-.813.382-.28.305-1.068 1.044-1.068 2.547 0 1.503 1.095 2.952 1.248 3.156.153.203 2.155 3.291 5.226 4.613.73.315 1.299.503 1.742.645.733.234 1.4.201 1.928.122.591-.088 1.805-.738 2.061-1.451.255-.713.255-1.323.179-1.451-.076-.128-.28-.204-.585-.357z"/></svg>
     </a>
     <a href="tel:+9647818025533" class="floating-icon-btn floating-call" title="Call Now">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
@@ -358,6 +911,216 @@
 </div>
 
 <script>
+    // =========================================================
+    // تشغيل المقدمة لمدة 5 ثواني مع صوت من الصحن ثم إظهار الصفحة الثانية
+    // =========================================================
+    (function initIntroSequence() {
+        const introEl = document.getElementById('tv-cinema-intro');
+        const canvas = document.getElementById('cinema-canvas');
+        const ctx = canvas ? canvas.getContext('2d') : null;
+        const sceneTilt = document.getElementById('scene-tilt');
+
+        let cssWidth = window.innerWidth;
+        let cssHeight = window.innerHeight;
+        let dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let stars = [];
+        let sparks = [];
+        let animId = null;
+        let audioPlayed = false;
+        let audioCtx = null;
+
+        // توليد صوت إشارة ستالايت واضح عند الدخول وفتح الصوت عند أول تفاعل إذا منعه المتصفح
+        function playDishSignalSound() {
+            if (audioPlayed) return;
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContextClass) return;
+
+                if (!audioCtx) {
+                    audioCtx = new AudioContextClass();
+                }
+
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().then(() => {
+                        triggerSynthAudio();
+                    }).catch(() => {});
+                    return;
+                }
+
+                triggerSynthAudio();
+            } catch (err) {
+                // تجاهل أخطاء المتصفح
+            }
+        }
+
+        function triggerSynthAudio() {
+            if (audioPlayed || !audioCtx) return;
+            const now = audioCtx.currentTime;
+
+            // موجة صعود الإشارة من الصحن
+            const sweepOsc = audioCtx.createOscillator();
+            const sweepGain = audioCtx.createGain();
+            sweepOsc.type = 'sine';
+            sweepOsc.frequency.setValueAtTime(220, now + 0.05);
+            sweepOsc.frequency.exponentialRampToValueAtTime(880, now + 0.65);
+
+            sweepGain.gain.setValueAtTime(0.001, now + 0.05);
+            sweepGain.gain.linearRampToValueAtTime(0.18, now + 0.2);
+            sweepGain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+
+            sweepOsc.connect(sweepGain);
+            sweepGain.connect(audioCtx.destination);
+            sweepOsc.start(now + 0.05);
+            sweepOsc.stop(now + 0.9);
+
+            // نغمة قفل الإشارة (Signal Lock Chime)
+            const notes = [523.25, 659.25, 783.99, 1046.5];
+            notes.forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const startT = now + 0.65 + idx * 0.11;
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, startT);
+
+                gain.gain.setValueAtTime(0.001, startT);
+                gain.gain.linearRampToValueAtTime(0.16, startT + 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.55);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(startT);
+                osc.stop(startT + 0.6);
+            });
+
+            audioPlayed = true;
+        }
+
+        function setupHDCanvas() {
+            if (!canvas || !ctx) return;
+            cssWidth = window.innerWidth;
+            cssHeight = window.innerHeight;
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            canvas.width = Math.floor(cssWidth * dpr);
+            canvas.height = Math.floor(cssHeight * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            stars = [];
+            sparks = [];
+
+            const starCount = Math.min(Math.floor((cssWidth * cssHeight) / 6500), 200);
+            for (let i = 0; i < starCount; i++) {
+                stars.push({
+                    x: Math.random() * cssWidth,
+                    y: Math.random() * cssHeight,
+                    r: Math.random() * 1.4 + 0.35,
+                    a: Math.random() * 0.85 + 0.15,
+                    speed: Math.random() * 0.02 + 0.006,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+
+            const sparkCount = cssWidth < 600 ? 20 : 38;
+            for (let i = 0; i < sparkCount; i++) {
+                sparks.push({
+                    x: Math.random() * cssWidth,
+                    y: Math.random() * cssHeight,
+                    vx: (Math.random() - 0.5) * 0.55,
+                    vy: -(Math.random() * 0.85 + 0.25),
+                    size: Math.random() * 2 + 0.9,
+                    rgb: Math.random() > 0.32 ? '56, 189, 248' : '251, 191, 36',
+                    alpha: Math.random() * 0.65 + 0.2
+                });
+            }
+        }
+
+        function renderHD() {
+            if (!ctx || !introEl || introEl.classList.contains('intro-exit')) return;
+            ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+            for (const s of stars) {
+                s.phase += s.speed;
+                const alpha = s.a * (0.55 + 0.45 * Math.sin(s.phase));
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(241, 245, 249, ${alpha})`;
+                ctx.fill();
+            }
+
+            for (const p of sparks) {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.y < -12) {
+                    p.y = cssHeight + 12;
+                    p.x = Math.random() * cssWidth;
+                }
+                if (p.x < -12) p.x = cssWidth + 12;
+                if (p.x > cssWidth + 12) p.x = -12;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${p.rgb}, ${p.alpha})`;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = `rgba(${p.rgb}, 0.85)`;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            animId = requestAnimationFrame(renderHD);
+        }
+
+        function updateTilt(clientX, clientY) {
+            if (!sceneTilt) return;
+            const rx = -((clientY - cssHeight / 2) / (cssHeight / 2)) * 8;
+            const ry = ((clientX - cssWidth / 2) / (cssWidth / 2)) * 8;
+            sceneTilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+        }
+
+        function onMouseMove(e) { updateTilt(e.clientX, e.clientY); }
+        function onTouchMove(e) {
+            playDishSignalSound();
+            if (e.touches.length) updateTilt(e.touches[0].clientX, e.touches[0].clientY);
+        }
+        function onTouchEnd() { if (sceneTilt) sceneTilt.style.transform = 'rotateX(0deg) rotateY(0deg)'; }
+        function onFirstInteract() { playDishSignalSound(); }
+
+        window.addEventListener('resize', setupHDCanvas);
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('touchmove', onTouchMove, { passive: true });
+        window.addEventListener('touchend', onTouchEnd);
+        window.addEventListener('pointerdown', onFirstInteract);
+        window.addEventListener('touchstart', onFirstInteract, { passive: true });
+
+        setupHDCanvas();
+        renderHD();
+        playDishSignalSound();
+
+        // الانتقال التلقائي إلى الصفحة الثانية بعد 5 ثواني
+        setTimeout(() => {
+            if (introEl) {
+                introEl.classList.add('intro-exit');
+            }
+            window.removeEventListener('resize', setupHDCanvas);
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('touchmove', onTouchMove);
+            window.removeEventListener('touchend', onTouchEnd);
+            window.removeEventListener('pointerdown', onFirstInteract);
+            window.removeEventListener('touchstart', onFirstInteract);
+            if (animId) cancelAnimationFrame(animId);
+            if (audioCtx && audioCtx.state !== 'closed') {
+                audioCtx.close().catch(() => {});
+            }
+
+            setTimeout(() => {
+                if (introEl && introEl.parentNode) {
+                    introEl.remove();
+                }
+            }, 700);
+        }, 5000);
+    })();
+
     let isAdmin = false;
     let allItems = [];
     let currentCategory = 'All';
